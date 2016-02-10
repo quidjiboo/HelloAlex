@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 
+import java.io.CharArrayReader;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 private static final String FIREBASE_URL = "https://resplendent-inferno-864.firebaseio.com/";
     private Firebase firebaseRef;
@@ -38,8 +41,15 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
         });
     }
    public void sendMessage(){
-
-
+       EditText Textinput = (EditText) findViewById(R.id.messageText);
+        String message = Textinput.getText().toString();
+       if(!message.equals("")){
+           Random rand = new Random();
+           String author = "Tesuser" + rand.nextInt(1000) ;
+           ChatmessAlex cMasg = new ChatmessAlex(author,message);
+           firebaseRef.push().setValue(cMasg);
+           Textinput.setText("");
+       }
     }
 
 }
