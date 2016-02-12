@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,18 +26,21 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 private static final String FIREBASE_URL = "https://resplendent-inferno-864.firebaseio.com/";
+    private String[] String_in_listview  = new String[10];;
     private Firebase firebaseRef;
     private EditText inpuText;
-    private EditText outputText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Firebase.setAndroidContext(this);
         firebaseRef = new Firebase(FIREBASE_URL);
 
         inpuText = (EditText) findViewById(R.id.messageText);
-        outputText = (EditText) findViewById(R.id.myouttextAkov);
+
 
         inpuText.setOnEditorActionListener(new TextView.OnEditorActionListener(){
             @Override
@@ -49,7 +53,30 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
         });
 
 
-//        ListView lvMain = (ListView) findViewById(R.id.listViewAkov);
+        for (int i = 0; i < 10; i++){
+            System.out.println("УРААА!!!!!!!!!!");
+           String_in_listview[i] = "";}
+
+        ListView lvMain = (ListView) findViewById(R.id.listViewAkov);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,	android.R.layout.simple_list_item_1, String_in_listview);
+        lvMain.setAdapter(adapter);
+        firebaseRef.child("-KAF7jIEqeTk1idjnZto").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+
+                String_in_listview[0] = snapshot.getValue().toString();
+
+                //       String_in_listview[1]=(String)snapshot.getValue();
+                //       String_in_listview[2]=(String)snapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
+
 //        lvMain.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -66,6 +93,9 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
 
     }
 
+
+
+
    public void sendMessage(){
      //  Log.d("dsfsd","паовпролвап !!!!!!!!!! !!!!!!!!!!!");
        EditText Textinput = (EditText) findViewById(R.id.messageText);
@@ -75,7 +105,7 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
            String author = "Tesuser" + rand.nextInt(1000) ;
           ChatmessAlex cMasg = new ChatmessAlex(author,message);
 
-          firebaseRef.push().setValue(cMasg);
+          firebaseRef.child("-KAF7jIEqeTk1idjnZto").setValue(cMasg);
            inpuText.setText("");
 
 //           firebaseRef.child("-KAF7jIEqeTk1idjnZto").addValueEventListener(new ValueEventListener() {
@@ -95,5 +125,6 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
 
     public void OnclickMy(View view) {
         sendMessage();
+
     }
 }
