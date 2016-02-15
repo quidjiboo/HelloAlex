@@ -57,7 +57,7 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
 
         for (int i = 0; i < 10; i++){
             System.out.println("УРААА!!!!!!!!!!");
-           String_in_listview[i] = "123";}
+           String_in_listview[i] = "";}
 
         lvMain = (ListView) findViewById(R.id.listViewAkov);
         adapter = new ArrayAdapter <String>(this,	android.R.layout.simple_list_item_1, String_in_listview);
@@ -71,10 +71,16 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
 
-                String_in_listview[0] = snapshot.getValue().toString();
-                String_in_listview[2]= String_in_listview[0];
-                String_in_listview[5]= String_in_listview[0];
-                String_in_listview[8]= String_in_listview[0];
+                for (int i = 0; i < 9; i++){
+                    String_in_listview[i] =String_in_listview[i+1];
+
+
+                    }
+                String_in_listview[9] = snapshot.getValue().toString();
+//                String_in_listview[0] = snapshot.getValue().toString();
+//                String_in_listview[2]= String_in_listview[0];
+//                String_in_listview[5]= String_in_listview[0];
+//                String_in_listview[8]= String_in_listview[0];
               adapter.notifyDataSetChanged();
                 //       String_in_listview[1]=(String)snapshot.getValue();
 
