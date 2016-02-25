@@ -20,11 +20,15 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.ui.auth.core.AuthProviderType;
+import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
+import com.firebase.ui.auth.core.FirebaseLoginError;
+
 
 import java.io.CharArrayReader;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FirebaseLoginBaseActivity {
 private static final String FIREBASE_URL = "https://resplendent-inferno-864.firebaseio.com/";
     private String[] String_in_listview  = new String[10];
     private Firebase firebaseRef;
@@ -66,7 +70,7 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
 
         lvMain.setAdapter(adapter);
 
-        firebaseRef.child("-KAF7jIEqeTk1idjnZto").addValueEventListener(new ValueEventListener() {
+        firebaseRef.child("Test123").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
@@ -119,7 +123,7 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
            String author = "Tesuser" + rand.nextInt(1000) ;
           ChatmessAlex cMasg = new ChatmessAlex(author,message);
 
-          firebaseRef.child("-KAF7jIEqeTk1idjnZto").setValue(cMasg);
+          firebaseRef.child("Test123").setValue(cMasg);
            inpuText.setText("");
 
 //           firebaseRef.child("-KAF7jIEqeTk1idjnZto").addValueEventListener(new ValueEventListener() {
@@ -140,5 +144,32 @@ private static final String FIREBASE_URL = "https://resplendent-inferno-864.fire
     public void OnclickMy(View view) {
         sendMessage();
 
+    }
+
+    @Override
+    protected Firebase getFirebaseRef() {
+        return firebaseRef;
+    }
+
+    @Override
+    protected void onFirebaseLoginProviderError(FirebaseLoginError firebaseLoginError) {
+
+    }
+
+    @Override
+    protected void onFirebaseLoginUserError(FirebaseLoginError firebaseLoginError) {
+
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // All providers are optional! Remove any you don't want.
+
+        setEnabledAuthProvider(AuthProviderType.PASSWORD);
+    }
+
+
+    public void OnclickMy_test(View view) {
+        showFirebaseLoginPrompt();
     }
 }

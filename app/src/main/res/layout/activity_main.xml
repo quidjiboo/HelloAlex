@@ -40,6 +40,12 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_send"
             android:onClick="OnclickMy" />
+        <ImageButton
+            android:id="@+id/auth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_send"
+            android:onClick="OnclickMy_test" />
 
     </LinearLayout>
 </RelativeLayout>
