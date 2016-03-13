@@ -17,10 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Test_auth"
-            android:label="@string/title_activity_test_auth"
-            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

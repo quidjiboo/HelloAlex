@@ -4,21 +4,22 @@ package ru.akov.helloalex;
  * Created by User on 10.02.2016.
  */
 public class ChatmessAlex {
-    private String author;
-    private String message;
-    public ChatmessAlex(){
+    private String name;
+    private String text;
 
+    public ChatmessAlex() {
+        // necessary for Firebase's deserializer
     }
-    public ChatmessAlex(String author, String message){
-        this.message = message;
-        this.author = author;
-    }
-
-    public String getAuthor() {
-        return author;
+    public ChatmessAlex(String name, String text) {
+        this.name = name;
+        this.text = text;
     }
 
-    public String getMessage() {
-        return message;
+    public String getName() {
+        return name;
+    }
+
+    public String getText() {
+        return text;
     }
 }

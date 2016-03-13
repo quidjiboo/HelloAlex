@@ -9,16 +9,62 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ru.akov.helloalex.MainActivity">
 
-    <ListView
-        android:id="@+id/listViewAkov"
+    <LinearLayout
+        android:id="@+id/verf"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/vvod"
-        android:transcriptMode="alwaysScroll"
-        android:nestedScrollingEnabled="false" />
+        android:layout_above="@+id/seredina"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:weightSum="1">
 
+        <Button
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="login"
+        android:id="@+id/OnclickMy_test"
+            android:onClick="OnclickMy_test" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NewAcc"
+            android:id="@+id/button_my_new_acc"
+            android:onClick="button_my_new_acc"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:id="@+id/button_my_Logout"
+
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:onClick="button_my" />
+
+    </LinearLayout>
     <LinearLayout
-        android:id="@+id/vvod"
+        android:id="@+id/seredina"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/niz"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+        <ListView
+            android:id="@+id/listViewAkov"
+            android:layout_width="match_parent"
+            android:layout_height="383dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/niz" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/niz"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,12 +86,8 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_send"
             android:onClick="OnclickMy" />
-        <ImageButton
-            android:id="@+id/auth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_send"
-            android:onClick="OnclickMy_test" />
 
     </LinearLayout>
+
+
 </RelativeLayout>
