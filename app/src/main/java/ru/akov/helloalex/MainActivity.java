@@ -17,6 +17,8 @@ import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -60,10 +62,10 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         inpuText = (EditText) findViewById(R.id.messageText);
 
 
-        inpuText.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+        inpuText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEND) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
                     sendMessage();
                 }
                 return true;
@@ -95,13 +97,47 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
       //  lvMain.setAdapter(adapter);
       lvMain.setAdapter(mListAdapter);
+        this.findViewById(R.id.listViewAkov).setFocusable(true);
+        this.findViewById(R.id.listViewAkov).requestFocus();
+        //    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+     /*   firebaseRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
+                if(firebaseRef.getAuth()!=null){
+                    System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!! МОЁ ИМЯ" + snapshot.child("users").child(firebaseRef.getAuth().getUid()).child("users").child("My_name").getValue().toString());
+                    Accont_info_my_sington.getInstance().setname(snapshot.child("users").child(firebaseRef.getAuth().getUid()).child("users").child("My_name").getValue().toString());}
+                else{
+                    Accont_info_my_sington.getInstance().setname("НЕЗАЛОГИНЕН");
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });*/
 
 
-
-
-  firebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
+/*        firebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
+
+                //ЭТО НАДО ПЕРЕНЕСТИ В СОСЗДАНИЕ АККАУНТА
                 if (authData != null) {
                     System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!!" + authData);
                     Map<String, String> map = new HashMap<String, String>();
@@ -109,8 +145,13 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
                     if (authData.getProviderData().containsKey("displayName")) {
                         map.put("displayName", authData.getProviderData().get("displayName").toString());
                     }
-                    firebaseRef.child("users").child(authData.getUid()).setValue(map);
+                    firebaseRef.child("users").child(authData.getUid()).child("provider").setValue(map.get("provider"));
+                    firebaseRef.child("users").child(authData.getUid()).child("displayName").setValue(map.get("displayName"));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+
+                    firebaseRef.child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
                     // user is logged in
+
                 } else {
                     // user is not logged in
                     System.out.println("РАЗРЫВ!!!!!!!!!!" + authData);
@@ -118,7 +159,12 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
                 }
             }
 
-        });
+        });*/
+
+
+
+
+
 
 /*
         firebaseRef.child("Test123").addValueEventListener(new ValueEventListener() {
@@ -166,13 +212,14 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
 
-   public void sendMessage(){
+    public void sendMessage(){
      //  Log.d("dsfsd","паовпролвап !!!!!!!!!! !!!!!!!!!!!");
     //   EditText Textinput = (EditText) findViewById(R.id.messageText);
         String message = inpuText.getText().toString();
        if(!message.equals("")){
            Random rand = new Random();
-           String author = "Tesuser" + rand.nextInt(1000) ;
+           String author = Accont_info_my_sington.getInstance().getname() ;
+     //      String author = "Tesuser" + rand.nextInt(1000) ;
           ChatmessAlex cMasg = new ChatmessAlex(author,message);
 
            firebaseRef.child("Test123").child("-KCVXxZze4WNA4gRPrWF").setValue(cMasg);
@@ -243,7 +290,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     public void OnclickMy_test(View view) {
         System.out.println("такой пользователь подключен " + firebaseRef.getAuth());
         showFirebaseLoginPrompt();
-
+     //   getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
     public void button_my_new_acc(View view) {
         if (getFirebaseRef().getAuth()!=null){
@@ -254,9 +301,12 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();}
         else{
-        newAcc(firebaseRef.getAuth());}
+        newAcc(firebaseRef.getAuth());
+            }
 
     }
+
+
     public void button_my(View view) {
         logout();
       //  firebaseRef.unauth();
@@ -283,6 +333,27 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
     }
 */
+   @Override
+   protected void onFirebaseLoggedIn(AuthData authData) {
+       System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!!" + authData);
+       Map<String, String> map = new HashMap<String, String>();
+       map.put("provider", authData.getProvider());
+       if (authData.getProviderData().containsKey("displayName")) {
+           map.put("displayName", authData.getProviderData().get("displayName").toString());
+       }
+       firebaseRef.child("users").child(authData.getUid()).child("provider").setValue(map.get("provider"));
+       firebaseRef.child("users").child(authData.getUid()).child("displayName").setValue(map.get("displayName"));
+       SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+
+       firebaseRef.child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
+
+       set_mylistner();
+
+   }
+
+
+
+
 
     @Override
     protected void onStop() {

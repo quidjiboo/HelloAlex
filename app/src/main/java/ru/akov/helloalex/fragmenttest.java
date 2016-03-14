@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
@@ -22,7 +23,9 @@ import java.util.Map;
 public class fragmenttest extends  DialogFragment{
     View view=null;
     Firebase mRefmy;
-
+    private String mail="";
+    private String pass="";
+    private String name="";
     public fragmenttest setRef(Firebase ref) {
         this.mRefmy = ref;
         return this;
@@ -45,12 +48,15 @@ public Dialog onCreateDialog(Bundle savedInstanceState) {
                         public void onClick(View v) {
 
 
-                                EditText loginBox=(EditText)view.findViewById(R.id.email_my);
+                                EditText nameBox=(EditText)view.findViewById(R.id.name_my);
+                            EditText loginBox=(EditText)view.findViewById(R.id.email_my);
                                 EditText passwordBox1=(EditText)view.findViewById(R.id.password1);
                                 EditText passwordBox2=(EditText)view.findViewById(R.id.password2);
-                                String login = loginBox.getText().toString();
+                               String login = loginBox.getText().toString();
 
+                           // view.findViewById(R.id.button_ok).setVisibility(View.GONE);
                             view.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
+                            view.findViewById(R.id.name_my).setVisibility(View.GONE);
                             view.findViewById(R.id.email_my).setVisibility(View.GONE);
                             view.findViewById(R.id.password1).setVisibility(View.GONE);
                             view.findViewById(R.id.password2).setVisibility(View.GONE);
@@ -58,19 +64,47 @@ public Dialog onCreateDialog(Bundle savedInstanceState) {
                                 if(passwordBox1.getText().toString().equals(passwordBox2.getText().toString())&&passwordBox1.getText().toString()!=null&&passwordBox2.getText().toString()!=null){
                                         String password = passwordBox1.getText().toString();
                                         Log.i("ЛОГИН", "одинаковые поля");
-
+                                    pass=password;
+                                    mail=login;
+                                    name=nameBox.getText().toString();
+                                    Accont_info_my_sington.getInstance().setname(name);
                                     mRefmy.createUser(login,password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+
                                         @Override
                                         public void onSuccess(Map<String, Object> result) {
+                                            //КОНЕКТИМСЯ
 
-                                            System.out.println("Создал аккаунт" + result.get("uid") + " Залогиньтесь");
-                                            Toast.makeText(view.getContext(), "Создал аккаунт" + result.get("uid") + " Залогиньтесь", Toast.LENGTH_SHORT).show();
-                                            view.findViewById(R.id.button_ok).setVisibility(View.VISIBLE);
-                                            view.findViewById(R.id.loading_section).setVisibility(View.GONE);
+                                            mRefmy.authWithPassword(mail, pass, new Firebase.AuthResultHandler() {
+                                                @Override
+                                                public void onAuthenticated(AuthData authData) {
+                                                    System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+                                                    pass = "";
+                                                    mail = "";
+                                                    view.findViewById(R.id.loading_section).setVisibility(View.GONE);
+                                                    view.findViewById(R.id.but_ok).setVisibility(View.VISIBLE);
+
+                                                    mRefmy.child("users").child(authData.getUid()).child("My_name").setValue(Accont_info_my_sington.getInstance().getname());
+
+                                                }
+
+                                                @Override
+                                                public void onAuthenticationError(FirebaseError firebaseError) {
+                                                    // there was an error
+                                                    Toast.makeText(view.getContext(), "Не удалось подключится", Toast.LENGTH_SHORT).show();
+                                                    System.out.println(firebaseError);
+                                                    dismiss();
+                                                }
+                                            });
+
+                                            System.out.println("Создал аккаунт" + result.get("uid"));
+                                            Toast.makeText(view.getContext(), "Создал аккаунт" + result.get("uid"), Toast.LENGTH_SHORT).show();
+
                                         }
                                         @Override
                                         public void onError(FirebaseError firebaseError) {
                                             view.findViewById(R.id.loading_section).setVisibility(View.GONE);
+                                            view.findViewById(R.id.but_ok).setVisibility(View.GONE);
+                                            view.findViewById(R.id.name_my).setVisibility(View.VISIBLE);
                                             view.findViewById(R.id.email_my).setVisibility(View.VISIBLE);
                                             view.findViewById(R.id.password1).setVisibility(View.VISIBLE);
                                             view.findViewById(R.id.password2).setVisibility(View.VISIBLE);
@@ -81,6 +115,8 @@ public Dialog onCreateDialog(Bundle savedInstanceState) {
                                     });
                                        } else {
                                     view.findViewById(R.id.loading_section).setVisibility(View.GONE);
+                                    view.findViewById(R.id.but_ok).setVisibility(View.GONE);
+                                    view.findViewById(R.id.name_my).setVisibility(View.VISIBLE);
                                     view.findViewById(R.id.email_my).setVisibility(View.VISIBLE);
                                     view.findViewById(R.id.password1).setVisibility(View.VISIBLE);
                                     view.findViewById(R.id.password2).setVisibility(View.VISIBLE);
@@ -105,8 +141,8 @@ public Dialog onCreateDialog(Bundle savedInstanceState) {
                 }}
     );
 
-    view.findViewById(R.id.loading_section).setVisibility(View.INVISIBLE);
-    view.findViewById(R.id.button_ok).setVisibility(View.INVISIBLE);
+    view.findViewById(R.id.loading_section).setVisibility(View.GONE);
+    view.findViewById(R.id.but_ok).setVisibility(View.GONE);
         builder.setView(this.view);
         this.setRetainInstance(true);
         return builder.create();

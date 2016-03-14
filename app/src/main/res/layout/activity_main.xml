@@ -8,7 +8,24 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ru.akov.helloalex.MainActivity">
+    <LinearLayout
+        android:id="@+id/verf1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/verf"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:weightSum="1"
+        android:layout_alignParentTop="true">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/textView_my" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/verf"
         android:orientation="horizontal"
@@ -53,14 +70,16 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/niz"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+     >
         <ListView
             android:id="@+id/listViewAkov"
             android:layout_width="match_parent"
-            android:layout_height="383dp"
+            android:layout_height="312dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_above="@+id/niz" />
+
+         />
 
     </LinearLayout>
     <LinearLayout
