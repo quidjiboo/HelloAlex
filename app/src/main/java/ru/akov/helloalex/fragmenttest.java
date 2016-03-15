@@ -92,7 +92,7 @@ public Dialog onCreateDialog(Bundle savedInstanceState) {
                                                     // there was an error
                                                     Toast.makeText(view.getContext(), "Не удалось подключится", Toast.LENGTH_SHORT).show();
                                                     System.out.println(firebaseError);
-                                                    dismiss();
+                                                    dismiss(); // DВОТ ТУТ ПОЮДУМАТЬ!!!!
                                                 }
                                             });
 

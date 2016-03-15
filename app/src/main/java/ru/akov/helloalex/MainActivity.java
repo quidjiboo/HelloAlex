@@ -1,10 +1,12 @@
 package ru.akov.helloalex;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -207,6 +209,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
 
+
     }
 
 
@@ -224,7 +227,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
            firebaseRef.child("Test123").child("-KCVXxZze4WNA4gRPrWF").setValue(cMasg);
 
-       //   firebaseRef.push().setValue(cMasg);
+        //  firebaseRef.push().setValue(cMasg);
 
            inpuText.setText("");
 
@@ -271,7 +274,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     public void showToast() {
         //создаем и отображаем текстовое уведомление
         Toast toast = Toast.makeText(getApplicationContext(),
-                "Ошибка пароля!",
+                "Ошибка соедединения!",
                 Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
