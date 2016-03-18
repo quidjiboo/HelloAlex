@@ -38,6 +38,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     }
     @Override
     protected void onFirebaseLoggedOut() {
+        super.onFirebaseLoggedOut();
         System.out.println("РАЗРЫВ!!!!!!!!!!");
         Accont_info_my_sington.getInstance().clerar();
 

@@ -15,7 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
@@ -108,6 +112,8 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
              TextView edf = (TextView) findViewById(R.id.textView_my);
              edf.setText(Accont_info_my_sington.getInstance().getname());
+
+
 
         //    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
      /*   firebaseRef.addChildEventListener(new ChildEventListener() {
@@ -320,7 +326,8 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
     public void button_my(View view) {
         logout();
-      //  firebaseRef.unauth();
+
+       firebaseRef.unauth();
 
     }
 
@@ -359,6 +366,33 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
        firebaseRef.child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
 
        set_mylistner();
+
+
+       final Firebase myConnectionsRef = new Firebase(FIREBASE_UR1L+"/users/"+getAuth().getUid()+"/connections");
+       final Firebase lastOnlineRef = new Firebase(FIREBASE_UR1L+"/users/"+getAuth().getUid()+"/lastOnline");
+       final Firebase connectedRef = new Firebase(FIREBASE_UR1L+"/.info/connected");
+       connectedRef.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(DataSnapshot snapshot) {
+               boolean connected = snapshot.getValue(Boolean.class);
+               if (connected) {
+                   // add this device to my connections list
+                   // this value could contain info about the device or a timestamp too
+                   Firebase con = myConnectionsRef.push();
+                   con.setValue(Boolean.TRUE);
+                   // when this device disconnects, remove it
+                   con.onDisconnect().removeValue();
+                   // when I disconnect, update the last time I was seen online
+                   lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
+               }
+           }
+
+           @Override
+           public void onCancelled(FirebaseError error) {
+               System.err.println("Listener was cancelled at .info/connected");
+           }
+       });
+
 
    }
 
