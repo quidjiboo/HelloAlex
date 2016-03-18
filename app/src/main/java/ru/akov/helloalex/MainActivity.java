@@ -1,6 +1,7 @@
 package ru.akov.helloalex;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -28,7 +29,8 @@ import java.util.Random;
 public class MainActivity extends myFirebaseLoginBaseActivity  {
 private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
    // private String[] String_in_listview  = new String[10];
-    private Firebase firebaseRef;
+    //Костылёк потом переделать !!!
+    static Firebase firebaseRef;
     private EditText inpuText;
 
      //private ListView lvMain;
@@ -101,6 +103,12 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
       lvMain.setAdapter(mListAdapter);
         this.findViewById(R.id.listViewAkov).setFocusable(true);
         this.findViewById(R.id.listViewAkov).requestFocus();
+
+
+
+             TextView edf = (TextView) findViewById(R.id.textView_my);
+             edf.setText(Accont_info_my_sington.getInstance().getname());
+
         //    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
      /*   firebaseRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -372,5 +380,20 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     protected void onDestroy() {
         super.onDestroy();
         mListAdapter.cleanup();
+    }
+
+    public void next_scr(View view) {
+        Intent intent = new Intent(MainActivity.this, Spisok_online.class);
+
+        startActivity(intent);
+        //  firebaseRef.unauth();
+
+    }
+
+
+    @Override
+    public void izmenit_label() {
+        TextView edf = (TextView) findViewById(R.id.textView_my);
+        edf.setText(Accont_info_my_sington.getInstance().getname());
     }
 }

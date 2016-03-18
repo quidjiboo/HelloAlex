@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">Hello Alex</string>
+    <string name="app_name">САШКИНА СОЦ СЕТЬ!</string>
     <string name="title_activity_test_auth">Test_auth</string>
+    <string name="spisok_online_akk">Список в онлайне</string>
 </resources>

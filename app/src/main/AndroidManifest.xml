@@ -18,6 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Spisok_online"
+            android:label="@string/spisok_online_akk">
+        </activity>
 
     </application>
 

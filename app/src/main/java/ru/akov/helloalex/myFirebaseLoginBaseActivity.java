@@ -12,7 +12,7 @@ import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 /**
  * Created by Alexandr on 11.03.2016.
  */
-public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity {
+public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my {
 
 
     public void set_mylistner(){
@@ -20,10 +20,12 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                System.out.println("ЗАШЁЛ ТАКИМИ ПОЛЯМИ"+snapshot.getValue());
+                System.out.println("ЗАШЁЛ ТАКИМИ ПОЛЯМИ" + snapshot.getValue());
                 Accont_info_my_sington.getInstance().setname(snapshot.getValue().toString());
-                TextView edf = (TextView) findViewById(R.id.textView_my);
-                edf.setText(Accont_info_my_sington.getInstance().getname());
+
+                izmenit_label();
+          //      TextView edf = (TextView) findViewById(R.id.textView_my);
+           //     edf.setText(Accont_info_my_sington.getInstance().getname());
 
             }
 
@@ -38,8 +40,10 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     protected void onFirebaseLoggedOut() {
         System.out.println("РАЗРЫВ!!!!!!!!!!");
         Accont_info_my_sington.getInstance().clerar();
-        TextView edf = (TextView) findViewById(R.id.textView_my);
-        edf.setText(Accont_info_my_sington.getInstance().getname());
+
+        izmenit_label();
+    //    TextView edf = (TextView) findViewById(R.id.textView_my);
+    //    edf.setText(Accont_info_my_sington.getInstance().getname());
     }
     public void newAcc(AuthData authData) {
         if(authData==null){
