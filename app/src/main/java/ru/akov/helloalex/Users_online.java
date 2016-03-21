@@ -9,16 +9,14 @@ public class Users_online {
     private String My_name;
     private String data_last_connect;
     private Map<String,Boolean> connections;
-
-    private String lastOnline;
+    private long lastOnline;
     private String provider;
 
     public Users_online() {
         // necessary for Firebase's deserializer
     }
-    public Users_online(String My_name,String data_last_connect, Map<String,Boolean> connections,  String lastOnline, String provider) {
-
-        this.My_name = My_name;
+    public Users_online(String Myname,String data_last_connect, Map<String,Boolean> connections,  long lastOnline, String provider) {
+        this.My_name = Myname;
         this.connections=connections;
         this.data_last_connect = data_last_connect;
         this.lastOnline = lastOnline;
@@ -35,7 +33,7 @@ public class Users_online {
     public String  getdata_last_connect() {
         return data_last_connect;
     }
-       public String  getlastOnline() {
+    public long getlastOnline() {
         return lastOnline;
     }
     public String  getprovider() {

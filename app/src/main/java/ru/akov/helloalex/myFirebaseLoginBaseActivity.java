@@ -65,7 +65,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
 
-            final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
+        /*    final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
             final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
             final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
 
@@ -93,15 +93,15 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
                 System.err.println("Listener was cancelled at .info/connected");
             }
-        });
+        });*/
 
         Accont_info_my_sington.getInstance().seauth(authData.toString());}
     }
     @Override
     protected void onFirebaseLoggedOut() {
         super.onFirebaseLoggedOut();
-        if(con!=null){
-        con.removeValue();}
+      /*  if(con!=null){
+        con.removeValue();}*/
         System.out.println("РАЗРЫВ!!!!!!!!!!");
         Accont_info_my_sington.getInstance().clerar();
 
