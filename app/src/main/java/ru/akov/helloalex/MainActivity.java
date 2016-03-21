@@ -1,13 +1,11 @@
 package ru.akov.helloalex;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -50,7 +48,8 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Firebase.setAndroidContext(this);
-        firebaseRef = new Firebase(FIREBASE_UR1L);
+        if(getFirebaseRef()==null){
+        firebaseRef = new Firebase(FIREBASE_UR1L);}
 
 
      //   firebaseRef.unauth();
@@ -305,8 +304,20 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
     public void OnclickMy_test(View view) {
-        System.out.println("такой пользователь подключен " + firebaseRef.getAuth());
-        showFirebaseLoginPrompt();
+
+
+        if (getFirebaseRef().getAuth()!=null){
+
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Пользователь" + getFirebaseRef().getAuth().getUid()  + "Разлонтесь!",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();}
+        else{
+            System.out.println("такой пользователь подключен " + firebaseRef.getAuth());
+            showFirebaseLoginPrompt();
+        }
+
      //   getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
     public void button_my_new_acc(View view) {
@@ -325,10 +336,16 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
     public void button_my(View view) {
-        logout();
 
-       firebaseRef.unauth();
+    /*    if(getAuth()!=null){
+            final Firebase connectedRef = new Firebase(FIREBASE_UR1L+"/.info/connected");
 
+           getFirebaseRef().child("/users/"+getAuth().getUid()+"/lastOnline").setValue(ServerValue.TIMESTAMP);
+           getFirebaseRef().child("/users/"+getAuth().getUid()+"/connections").removeValue();}*/
+
+       logout();
+
+       getFirebaseRef().unauth();
     }
 
    /* кнопка была
@@ -367,6 +384,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
        set_mylistner();
 
+       izmenit_label();
 
        final Firebase myConnectionsRef = new Firebase(FIREBASE_UR1L+"/users/"+getAuth().getUid()+"/connections");
        final Firebase lastOnlineRef = new Firebase(FIREBASE_UR1L+"/users/"+getAuth().getUid()+"/lastOnline");
@@ -378,8 +396,10 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
                if (connected) {
                    // add this device to my connections list
                    // this value could contain info about the device or a timestamp too
+                   //   myConnectionsRef.removeValue();
                    Firebase con = myConnectionsRef.push();
-                   con.setValue(Boolean.TRUE);
+                   //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
+                    con.setValue(Boolean.TRUE);
                    // when this device disconnects, remove it
                    con.onDisconnect().removeValue();
                    // when I disconnect, update the last time I was seen online

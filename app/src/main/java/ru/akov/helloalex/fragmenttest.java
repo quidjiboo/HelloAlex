@@ -74,6 +74,7 @@ public Dialog onCreateDialog(Bundle savedInstanceState) {
                                         public void onSuccess(Map<String, Object> result) {
                                             //КОНЕКТИМСЯ
 
+                                            mRefmy.child("users").child(result.get("uid").toString()).child("My_name").setValue(Accont_info_my_sington.getInstance().getname());
                                             mRefmy.authWithPassword(mail, pass, new Firebase.AuthResultHandler() {
                                                 @Override
                                                 public void onAuthenticated(AuthData authData) {
@@ -83,21 +84,21 @@ public Dialog onCreateDialog(Bundle savedInstanceState) {
                                                     view.findViewById(R.id.loading_section).setVisibility(View.GONE);
                                                     view.findViewById(R.id.but_ok).setVisibility(View.VISIBLE);
 
-                                                    mRefmy.child("users").child(authData.getUid()).child("My_name").setValue(Accont_info_my_sington.getInstance().getname());
+
 
                                                 }
 
                                                 @Override
                                                 public void onAuthenticationError(FirebaseError firebaseError) {
                                                     // there was an error
-                                                    Toast.makeText(view.getContext(), "Не удалось подключится", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(view.getContext(), "Не удалось подключится", Toast.LENGTH_LONG).show();
                                                     System.out.println(firebaseError);
                                                     dismiss(); // DВОТ ТУТ ПОЮДУМАТЬ!!!!
                                                 }
                                             });
 
                                             System.out.println("Создал аккаунт" + result.get("uid"));
-                                            Toast.makeText(view.getContext(), "Создал аккаунт" + result.get("uid"), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(view.getContext(), "Создал аккаунт" + result.get("uid"), Toast.LENGTH_LONG).show();
 
                                         }
                                         @Override

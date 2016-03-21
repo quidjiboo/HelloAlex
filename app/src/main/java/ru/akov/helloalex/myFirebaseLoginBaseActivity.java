@@ -1,7 +1,6 @@
 package ru.akov.helloalex;
 
 import android.app.FragmentManager;
-import android.widget.TextView;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -21,11 +20,12 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
             public void onDataChange(DataSnapshot snapshot) {
 
                 System.out.println("ЗАШЁЛ ТАКИМИ ПОЛЯМИ" + snapshot.getValue());
-                Accont_info_my_sington.getInstance().setname(snapshot.getValue().toString());
 
+                Accont_info_my_sington.getInstance().setname(snapshot.getValue().toString());
                 izmenit_label();
-          //      TextView edf = (TextView) findViewById(R.id.textView_my);
-           //     edf.setText(Accont_info_my_sington.getInstance().getname());
+
+                //      TextView edf = (TextView) findViewById(R.id.textView_my);
+                //     edf.setText(Accont_info_my_sington.getInstance().getname());
 
             }
 
@@ -39,12 +39,15 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     @Override
     protected void onFirebaseLoggedOut() {
         super.onFirebaseLoggedOut();
+
         System.out.println("РАЗРЫВ!!!!!!!!!!");
         Accont_info_my_sington.getInstance().clerar();
 
         izmenit_label();
+
     //    TextView edf = (TextView) findViewById(R.id.textView_my);
     //    edf.setText(Accont_info_my_sington.getInstance().getname());
+
     }
     public void newAcc(AuthData authData) {
         if(authData==null){
