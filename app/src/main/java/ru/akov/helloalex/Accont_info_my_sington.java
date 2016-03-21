@@ -9,6 +9,7 @@ public class Accont_info_my_sington {
     private String pass;
     private String mail;
     private static Accont_info_my_sington instance;
+    private String auth;
 
     private Accont_info_my_sington(){
         name_for_log="";
@@ -30,6 +31,12 @@ public class Accont_info_my_sington {
     public void setname(String name){
         this.name_for_log=name;
         name_use_afterlogin=name_for_log;
+    }
+    public void seauth(String name){
+        this.auth=name;
+    }
+    public String getauth(){
+        return auth;
     }
     public void clerar(){
         name_use_afterlogin="ВЫ НЕ ПОДКЛЮЧЕНЫ!";

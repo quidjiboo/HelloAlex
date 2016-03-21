@@ -30,41 +30,18 @@ import java.util.Random;
 
 public class MainActivity extends myFirebaseLoginBaseActivity  {
 private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
-   // private String[] String_in_listview  = new String[10];
+    My_app app;
     //Костылёк потом переделать !!!
     static Firebase firebaseRef;
     private EditText inpuText;
-
-     //private ListView lvMain;
-    private ArrayAdapter<String> adapter;
- //   private String sostyanie="згыещ";
-
     FirebaseListAdapter<ChatmessAlex> mListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        Firebase.setAndroidContext(this);
-        if(getFirebaseRef()==null){
-        firebaseRef = new Firebase(FIREBASE_UR1L);}
-
-
-     //   firebaseRef.unauth();
-
-
-
-
-
-
-
-
-
-     //   firebaseRef.authWithPassword("quidjiboo@mail.ru", "qwer1ty", authResultHandler);
-      //  System.out.println("JПОПЫТКА ПОДКЛЮЧИТСЬЯ " + firebaseRef.getAuth());
-     //   firebaseRef.unauth();
+        app = ((My_app) getApplicationContext());
 
         inpuText = (EditText) findViewById(R.id.messageText);
 
@@ -80,21 +57,11 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         });
 
 
-     //   for (int i = 0; i < 10; i++){
-     //       System.out.println("УРААА!!!!!!!!!!");
-      //     String_in_listview[i] = "";}
-
-
-
-      //  adapter = new ArrayAdapter <String>(this,	android.R.layout.simple_list_item_1, String_in_listview);
-      //  adapter.notifyDataSetChanged();
-       // adapter.setNotifyOnChange(true);
-
 
         final ListView   lvMain = (ListView) this.findViewById(R.id.listViewAkov);
 
         mListAdapter = new FirebaseListAdapter<ChatmessAlex>(this, ChatmessAlex.class,
-                android.R.layout.two_line_list_item, firebaseRef.child("Test123")) {
+                android.R.layout.two_line_list_item, getFirebaseRef().child("Test123")) {
             @Override
             protected void populateView(View v, ChatmessAlex model, int position) {
                 ((TextView)v.findViewById(android.R.id.text1)).setText(model.getName());
@@ -102,8 +69,8 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
             }
         };
 
-      //  lvMain.setAdapter(adapter);
       lvMain.setAdapter(mListAdapter);
+
         this.findViewById(R.id.listViewAkov).setFocusable(true);
         this.findViewById(R.id.listViewAkov).requestFocus();
 
@@ -114,114 +81,6 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
 
-        //    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-     /*   firebaseRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-                if(firebaseRef.getAuth()!=null){
-                    System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!! МОЁ ИМЯ" + snapshot.child("users").child(firebaseRef.getAuth().getUid()).child("users").child("My_name").getValue().toString());
-                    Accont_info_my_sington.getInstance().setname(snapshot.child("users").child(firebaseRef.getAuth().getUid()).child("users").child("My_name").getValue().toString());}
-                else{
-                    Accont_info_my_sington.getInstance().setname("НЕЗАЛОГИНЕН");
-                }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });*/
-
-
-/*        firebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(AuthData authData) {
-
-                //ЭТО НАДО ПЕРЕНЕСТИ В СОСЗДАНИЕ АККАУНТА
-                if (authData != null) {
-                    System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!!" + authData);
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("provider", authData.getProvider());
-                    if (authData.getProviderData().containsKey("displayName")) {
-                        map.put("displayName", authData.getProviderData().get("displayName").toString());
-                    }
-                    firebaseRef.child("users").child(authData.getUid()).child("provider").setValue(map.get("provider"));
-                    firebaseRef.child("users").child(authData.getUid()).child("displayName").setValue(map.get("displayName"));
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
-
-                    firebaseRef.child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
-                    // user is logged in
-
-                } else {
-                    // user is not logged in
-                    System.out.println("РАЗРЫВ!!!!!!!!!!" + authData);
-
-                }
-            }
-
-        });*/
-
-
-
-
-
-
-/*
-        firebaseRef.child("Test123").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue().toString());  //prints "Do you have data? You'll love Firebase."
-
-                for (int i = 0; i < 9; i++) {
-                    String_in_listview[i] = String_in_listview[i + 1];
-
-
-                }
-
-                String_in_listview[9] = snapshot.getValue().toString();
-                adapter.notifyDataSetChanged();
-                //       String_in_listview[1]=(String)snapshot.getValue();
-                firebaseRef.removeEventListener(this);
-            }
-
-
-
-
-            @Override
-            public void onCancelled(FirebaseError error) {
-                System.out.println("The read failed: " + error.getMessage());
-            }
-        });*/
-
-/*        lvMain.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d("dsfsd", "паовпролвап !!!!!!!!!! !!!!!!!!!!!");
-
-               InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(inpuText.getWindowToken(), 0);
-
-                return false;
-            }
-        });*/
-
-
-
 
     }
 
@@ -229,30 +88,18 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
     public void sendMessage(){
-     //  Log.d("dsfsd","паовпролвап !!!!!!!!!! !!!!!!!!!!!");
-    //   EditText Textinput = (EditText) findViewById(R.id.messageText);
+
         String message = inpuText.getText().toString();
        if(!message.equals("")){
            Random rand = new Random();
            String author = Accont_info_my_sington.getInstance().getname() ;
-     //      String author = "Tesuser" + rand.nextInt(1000) ;
+
           ChatmessAlex cMasg = new ChatmessAlex(author,message);
 
-           firebaseRef.child("Test123").child("-KCVXxZze4WNA4gRPrWF").setValue(cMasg);
+           getFirebaseRef().child("Test123").child("-KCVXxZze4WNA4gRPrWF").setValue(cMasg);
 
-        //  firebaseRef.push().setValue(cMasg);
 
            inpuText.setText("");
-
-//           firebaseRef.child("-KAF7jIEqeTk1idjnZto").addValueEventListener(new ValueEventListener() {
-//               @Override
-//               public void onDataChange(DataSnapshot snapshot) {
-//                   System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
-//                   outputText.setText((String)snapshot.getValue());
-//               }
-//               @Override
-//               public void onCancelled(FirebaseError error) { }
-//           });
 
        }
 
@@ -266,7 +113,12 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
     @Override
     protected Firebase getFirebaseRef() {
-        return firebaseRef;
+
+
+        return                app.getFirebaseRef();
+           //     firebaseRef;
+
+
     }
 
     @Override
@@ -296,7 +148,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     protected void onStart() {
         super.onStart();
         // All providers are optional! Remove any you don't want.
-
+ //   if(getFirebaseRef().getAuth()==null)
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
 
     }
@@ -314,7 +166,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();}
         else{
-            System.out.println("такой пользователь подключен " + firebaseRef.getAuth());
+            System.out.println("такой пользователь подключен " + getFirebaseRef().getAuth());
             showFirebaseLoginPrompt();
         }
 
@@ -329,7 +181,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();}
         else{
-        newAcc(firebaseRef.getAuth());
+        newAcc(getFirebaseRef().getAuth());
             }
 
     }
@@ -337,84 +189,13 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
     public void button_my(View view) {
 
-    /*    if(getAuth()!=null){
-            final Firebase connectedRef = new Firebase(FIREBASE_UR1L+"/.info/connected");
-
-           getFirebaseRef().child("/users/"+getAuth().getUid()+"/lastOnline").setValue(ServerValue.TIMESTAMP);
-           getFirebaseRef().child("/users/"+getAuth().getUid()+"/connections").removeValue();}*/
 
        logout();
 
        getFirebaseRef().unauth();
     }
 
-   /* кнопка была
-   public void new_acc(View view) {
 
-        System.out.println("такой пользователь подключен " + firebaseRef.getAuth());
-        showFirebaseLoginPromptmy(firebaseRef.getAuth());
-
-
-
-        myfragment tetsobj = new myfragment();
-        FragmentManager manager = getSupportFragmentManager();
-        tetsobj.show(manager,"cvgdflksjvlkdsjflkjdlksdj");
-
-
-        myfragment myDialogFragment = new myfragment();
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        myDialogFragment.show(transaction, "dialog");
-
-    }
-*/
-   @Override
-   protected void onFirebaseLoggedIn(AuthData authData) {
-       System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!!" + authData);
-       Map<String, String> map = new HashMap<String, String>();
-       map.put("provider", authData.getProvider());
-       if (authData.getProviderData().containsKey("displayName")) {
-           map.put("displayName", authData.getProviderData().get("displayName").toString());
-       }
-       firebaseRef.child("users").child(authData.getUid()).child("provider").setValue(map.get("provider"));
-       firebaseRef.child("users").child(authData.getUid()).child("displayName").setValue(map.get("displayName"));
-       SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
-
-       firebaseRef.child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
-
-       set_mylistner();
-
-       izmenit_label();
-
-       final Firebase myConnectionsRef = new Firebase(FIREBASE_UR1L+"/users/"+getAuth().getUid()+"/connections");
-       final Firebase lastOnlineRef = new Firebase(FIREBASE_UR1L+"/users/"+getAuth().getUid()+"/lastOnline");
-       final Firebase connectedRef = new Firebase(FIREBASE_UR1L+"/.info/connected");
-       connectedRef.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(DataSnapshot snapshot) {
-               boolean connected = snapshot.getValue(Boolean.class);
-               if (connected) {
-                   // add this device to my connections list
-                   // this value could contain info about the device or a timestamp too
-                   //   myConnectionsRef.removeValue();
-                   Firebase con = myConnectionsRef.push();
-                   //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
-                    con.setValue(Boolean.TRUE);
-                   // when this device disconnects, remove it
-                   con.onDisconnect().removeValue();
-                   // when I disconnect, update the last time I was seen online
-                   lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
-               }
-           }
-
-           @Override
-           public void onCancelled(FirebaseError error) {
-               System.err.println("Listener was cancelled at .info/connected");
-           }
-       });
-
-
-   }
 
 
 
