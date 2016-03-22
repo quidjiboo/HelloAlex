@@ -29,6 +29,7 @@ public class Accont_info_my_sington {
         return name_use_afterlogin;
     }
     public void setname(String name){
+
         this.name_for_log=name;
         name_use_afterlogin=name_for_log;
     }

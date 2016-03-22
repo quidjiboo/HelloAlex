@@ -1,8 +1,6 @@
 package ru.akov.helloalex;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,7 +28,7 @@ public class Spisok_online extends myFirebaseLoginBaseActivity implements Labal_
                android.R.layout.simple_list_item_1, getFirebaseRef().child("users")) {
             @Override
             protected void populateView(View v, Users_online model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getMy_Name());
+                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getMy_name());
              //   ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
             }
         };
