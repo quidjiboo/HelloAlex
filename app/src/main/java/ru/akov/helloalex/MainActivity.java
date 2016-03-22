@@ -183,6 +183,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
        logout();
 
        getFirebaseRef().unauth();
+     //   app.remove();
     }
 
 

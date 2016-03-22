@@ -15,7 +15,7 @@ public class Accont_info_my_sington {
         name_for_log="";
         pass="";
         mail="";
-        name_use_afterlogin="ВЫ НЕ ПОДКЛЮЧЕНЫ!";
+        name_use_afterlogin="new instane";
     }
 
     public static synchronized Accont_info_my_sington getInstance() {

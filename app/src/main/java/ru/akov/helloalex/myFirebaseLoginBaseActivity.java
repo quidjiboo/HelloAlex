@@ -50,7 +50,7 @@ if(snapshot.getValue()!=null){
     @Override
     protected void onFirebaseLoggedIn(AuthData authData) {
         if(!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
-            set_mylistner();
+
         System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!!" + authData);
         Map<String, String> map = new HashMap<String, String>();
             map.put("provider", authData.getProvider());
@@ -60,17 +60,18 @@ if(snapshot.getValue()!=null){
         getFirebaseRef().child("users").child(authData.getUid()).child("provider").setValue(map.get("provider"));
         getFirebaseRef().child("users").child(authData.getUid()).child("displayName").setValue(map.get("displayName"));
             getFirebaseRef().child("users").child(authData.getUid()).child("My_name").setValue(Accont_info_my_sington.getInstance().getname());
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
 
        // getFirebaseRef().child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
 
-
+            set_mylistner();
 
     //    izmenit_label();
 
 
             final Firebase listofuseronline = new Firebase(getFirebaseRef()+"/usersonline/");
-            final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/user/"+getAuth().getUid()+"/connections");
+            final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
             final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
             final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
 
@@ -86,6 +87,7 @@ if(snapshot.getValue()!=null){
 
                     //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
                     con.setValue(Boolean.TRUE);
+
                     // when this device disconnects, remove it
                     con.onDisconnect().removeValue();
                     // when I disconnect, update the last time I was seen online
@@ -102,6 +104,22 @@ if(snapshot.getValue()!=null){
                 System.err.println("Listener was cancelled at .info/connected");
             }
         });
+            myConnectionsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.exists() && snapshot.getChildrenCount() == 1) {
+                        con2 = listofuseronline.push();
+                        con2.setValue(Boolean.TRUE);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError error) {
+
+                    System.err.println("Listener was cancelled at .info/connected");
+                }
+            });
 
         Accont_info_my_sington.getInstance().seauth(authData.toString());}
     }
@@ -110,8 +128,9 @@ if(snapshot.getValue()!=null){
         super.onFirebaseLoggedOut();
         if(con!=null){
         con.removeValue();}
+
         System.out.println("РАЗРЫВ!!!!!!!!!!");
-        Accont_info_my_sington.getInstance().clerar();
+        Accont_info_my_sington.getInstance().clerar(); //может и не надо удалять
 
         izmenit_label();
 

@@ -33,4 +33,11 @@ public class My_app extends Application {
 
 
     }
+    protected void remove() {
+
+
+                Firebase.goOffline();
+
+
+    }
 }
