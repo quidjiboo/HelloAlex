@@ -67,6 +67,11 @@ public class Spisok_online extends myFirebaseLoginBaseActivity implements Labal_
     }
 
     @Override
+    public void izmenit_singltone(String name) {
+
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         //    mListAdapter.cleanup();

@@ -450,4 +450,9 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         TextView edf = (TextView) findViewById(R.id.textView_my);
         edf.setText(Accont_info_my_sington.getInstance().getname());
     }
+
+    @Override
+    public void izmenit_singltone(String name) {
+
+    }
 }

@@ -22,6 +22,9 @@
         <activity android:name=".Spisok_online"
             android:label="@string/spisok_online_akk">
         </activity>
+        <activity android:name=".StartMainActivity"
+            android:label="@string/Start_scr">
+        </activity>
 
     </application>
 

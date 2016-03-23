@@ -1,27 +1,18 @@
 package ru.akov.helloalex;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 
-import java.util.Random;
-
-public class MainActivity extends myFirebaseLoginBaseActivity  {
+public class StartMainActivity extends myFirebaseLoginBaseActivity  {
 private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
     My_app app;
     //Костылёк потом переделать !!!
@@ -33,76 +24,14 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.startactivity_main);
         app = ((My_app) getApplicationContext());
 
-        inpuText = (EditText) findViewById(R.id.messageText);
-
-
-        inpuText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    sendMessage();
-                }
-                return true;
-            }
-        });
-
-
-
-        final ListView   lvMain = (ListView) this.findViewById(R.id.listViewAkov);
-
-        mListAdapter = new FirebaseListAdapter<ChatmessAlex>(this, ChatmessAlex.class,
-                android.R.layout.two_line_list_item, getFirebaseRef().child("Test123")) {
-            @Override
-            protected void populateView(View v, ChatmessAlex model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getName());
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
-            }
-        };
-
-      lvMain.setAdapter(mListAdapter);
-
-        this.findViewById(R.id.listViewAkov).setFocusable(true);
-        this.findViewById(R.id.listViewAkov).requestFocus();
-
-
-
-             TextView edf = (TextView) findViewById(R.id.textView_my);
-             edf.setText(Accont_info_my_sington.getInstance().getname());
-
-
-
 
     }
 
 
 
-
-    public void sendMessage(){
-
-        String message = inpuText.getText().toString();
-       if(!message.equals("")){
-           Random rand = new Random();
-           String author = Accont_info_my_sington.getInstance().getname() ;
-
-          ChatmessAlex cMasg = new ChatmessAlex(author,message);
-
-           getFirebaseRef().child("Test123").child("-KCVXxZze4WNA4gRPrWF").setValue(cMasg);
-
-
-           inpuText.setText("");
-
-       }
-
-    }
-
-
-    public void OnclickMy(View view) {
-        sendMessage();
-
-    }
 
     @Override
     protected Firebase getFirebaseRef() {
@@ -148,14 +77,13 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
 
-    public void OnclickMy_test(View view) {
+    public void OnclickMy_test_login_new(View view) {
 
-    //    Firebase.goOnline();
 
         if (getFirebaseRef().getAuth()!=null){
 
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Пользователь" + getFirebaseRef().getAuth().getUid()  + "Разлонтесь!",
+                    "Пользователь" + getFirebaseRef().getAuth().getUid()  + "ЧТОТО ПОШЛО НЕ ТАК",
                     Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();}
@@ -166,7 +94,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
      //   getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
-    public void button_my_new_acc(View view) {
+    public void button_my_new_acc_new(View view) {
         if (getFirebaseRef().getAuth()!=null){
 
             Toast toast = Toast.makeText(getApplicationContext(),
@@ -187,10 +115,6 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
        logout();
 
        getFirebaseRef().unauth();
-     //   Firebase.goOffline();
-
-
-
      //   app.remove();
     }
 
@@ -216,14 +140,6 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         mListAdapter.cleanup();
     }
 
-    public void next_scr(View view) {
-        Intent intent = new Intent(MainActivity.this, Spisok_online.class);
-
-        startActivity(intent);
-        //  firebaseRef.unauth();
-
-    }
-
 
     @Override
     public void izmenit_label() {
@@ -233,7 +149,10 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     @Override
     public void
     izmenit_singltone(String name){
+        if(name!=null)
         Accont_info_my_sington.getInstance().setname(name);
+        else
+            Accont_info_my_sington.getInstance().setname("none");
 
     }
 }
