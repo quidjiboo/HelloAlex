@@ -17,13 +17,13 @@ public class Users_online {
 
 
 
-    public Users_online(String My_name,String provider,Boolean onlineu) {
+    public Users_online(String My_name,String provider) {
         this.My_name = My_name;
     /*    this.connections = connections;
         this.data_last_connect = data_last_connect;
         this.lastOnline = lastOnline;*/
         this.provider = provider;
-        this.onlineu = onlineu;
+
     }
     public String getMy_name() {
         return My_name;
@@ -44,7 +44,5 @@ public class Users_online {
     public String getProvider() {
         return provider;
     }
-    public Boolean onlineu() {
-        return onlineu;
-    }
+
 }

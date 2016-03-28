@@ -3,6 +3,7 @@ package ru.akov.helloalex;
 import android.app.FragmentManager;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -18,8 +19,12 @@ import java.util.Map;
  */
 public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my {
     Firebase con;
+    Firebase conectionlist;
 
     ValueEventListener originalListener;
+    ValueEventListener listconectionlistner;
+
+
     public void set_mylistner(){
         getFirebaseRef().child("users").child(this.getAuth().getUid()).child("My_name").addValueEventListener(new ValueEventListener() {
             @Override
@@ -78,11 +83,42 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
     //    izmenit_label();
 
-
+            final Firebase connectedlist = new Firebase(getFirebaseRef()+"/connectionlist");
 
             final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
             final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
             final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
+
+            myConnectionsRef.addValueEventListener(listconectionlistner = new ValueEventListener() {
+
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot!=null) {
+                        conectionlist = connectedlist.push();
+
+                        Users_online cMasg = new Users_online("test","test");
+
+
+                        conectionlist.setValue(cMasg);
+                        conectionlist.onDisconnect().removeValue();
+                    }
+
+               if (dataSnapshot==null) {
+
+
+
+                        conectionlist.removeValue();
+                }
+            }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+
 
             connectedRef.addValueEventListener(originalListener = new ValueEventListener() {
                 @Override
@@ -126,12 +162,14 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     @Override
     protected void onFirebaseLoggedOut() {
         super.onFirebaseLoggedOut();
-
+        if(conectionlist!=null){
+            conectionlist.removeValue();}
         if(con!=null){
             con.removeValue();}
 
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
-        connectedRef.removeEventListener(originalListener);
+        if(originalListener!=null){
+        connectedRef.removeEventListener(originalListener);}
 
         System.out.println("РАЗРЫВ!!!!!!!!!!");
         Accont_info_my_sington.getInstance().clerar(); //может и не надо удалять
