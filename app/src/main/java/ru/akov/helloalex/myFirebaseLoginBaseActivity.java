@@ -1,6 +1,9 @@
 package ru.akov.helloalex;
 
 import android.app.FragmentManager;
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
@@ -20,7 +23,7 @@ import java.util.Map;
 public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my {
     Firebase con;
     Firebase conectionlist;
-
+private String uid_my="";
     ValueEventListener originalListener;
     ValueEventListener listconectionlistner;
 
@@ -61,6 +64,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     }
     @Override
     protected void onFirebaseLoggedIn(AuthData authData) {
+        uid_my=getAuth().getUid();
         if(con!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
             con.removeValue();}
         if(!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
@@ -95,22 +99,25 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    if (dataSnapshot!=null) {
+                    if (dataSnapshot!=null&&dataSnapshot.getChildrenCount()==1) {
+                      //  System.out.println(dataSnapshot.getChildrenCount());
+                        System.out.println(android.os.Build.MODEL);
                         conectionlist = connectedlist.push();
 
-                        Users_online cMasg = new Users_online("test","test");
+                        Users_online cMasg = new Users_online("test","test",android.os.Build.MODEL.toString());
 
 
                         conectionlist.setValue(cMasg);
                         conectionlist.onDisconnect().removeValue();
                     }
 
-               if (dataSnapshot==null) {
+               else if (dataSnapshot!=null||dataSnapshot.getChildrenCount()!=1) {
 
 
 
                         conectionlist.removeValue();
                 }
+//                    else {conectionlist.removeValue();}
             }
 
                 @Override
@@ -168,8 +175,12 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
             con.removeValue();}
 
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
+        final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+uid_my+"/connections");
+        if(listconectionlistner!=null){
+            myConnectionsRef.removeEventListener(listconectionlistner);}
+
         if(originalListener!=null){
-        connectedRef.removeEventListener(originalListener);}
+            connectedRef.removeEventListener(originalListener);}
 
         System.out.println("РАЗРЫВ!!!!!!!!!!");
         Accont_info_my_sington.getInstance().clerar(); //может и не надо удалять

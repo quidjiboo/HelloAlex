@@ -1,6 +1,9 @@
 package ru.akov.helloalex;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -25,13 +28,24 @@ public class MainActivity extends myFirebaseLoginBaseActivity  {
 private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
     My_app app;
     //Костылёк потом переделать !!!
-    static Firebase firebaseRef;
+  //  static Firebase firebaseRef;
+    static String  ipString="0.0.0.0";
     private EditText inpuText;
     FirebaseListAdapter<ChatmessAlex> mListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInf = wifiMan.getConnectionInfo();
+        int ipAddress = wifiInf.getIpAddress();
+        String ipString = String.format("%d.%d.%d.%d",
+                (ipAddress & 0xff),
+                (ipAddress >> 8 & 0xff),
+                (ipAddress >> 16 & 0xff),
+                (ipAddress >> 24 & 0xff));
 
         setContentView(R.layout.activity_main);
         app = ((My_app) getApplicationContext());
