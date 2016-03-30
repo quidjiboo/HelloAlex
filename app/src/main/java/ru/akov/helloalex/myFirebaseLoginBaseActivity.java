@@ -24,8 +24,10 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     Firebase con;
     Firebase conectionlist;
 private String uid_my="";
+    private String onlinekey="";
     ValueEventListener originalListener;
     ValueEventListener listconectionlistner;
+
 
 
     public void set_mylistner(){
@@ -88,19 +90,72 @@ private String uid_my="";
     //    izmenit_label();
 
             final Firebase connectedlist = new Firebase(getFirebaseRef()+"/connectionlist");
-
+          //  final Firebase myt_typ_Conne = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/type");
+            final Firebase myt_key_Conne = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid());
+            final Firebase myt_key_Conne_key = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/key");
             final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
             final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
             final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
 
-            myConnectionsRef.addValueEventListener(listconectionlistner = new ValueEventListener() {
+           myConnectionsRef.addValueEventListener(listconectionlistner = new ValueEventListener() {
+
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    myt_key_Conne.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if(snapshot!=null){
+                            onlinekey=snapshot.child("key").getValue().toString();
+                            System.out.println("ПРИ ПЕРВОМ ЗАПУСКЕ " +onlinekey);}
+                            // do some stuff once
+                        }
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
+                    if (dataSnapshot!=null&&dataSnapshot.getChildrenCount()==1&&onlinekey=="") {
+                      //  System.out.println(dataSnapshot.getChildrenCount());
+                        System.out.println(android.os.Build.MODEL);
+                        conectionlist = connectedlist.push();
+
+                        Users_online cMasg = new Users_online("test","test",android.os.Build.MODEL.toString());
+
+
+                        conectionlist.setValue(cMasg);
+                        onlinekey = conectionlist.getKey().toString();
+                        System.out.println("ВОТ ТАКОЙ КЛЮЧ СОЗДАЛ" + onlinekey);
+
+
+
+                        myt_key_Conne_key.setValue(onlinekey);
+
+
+                        conectionlist.onDisconnect().removeValue();
+                    }
+
+               // ОПРЕДЕЛИТЬ ИЗМЕНИЛСЯ ЛИ АЙДИ или парметр того кто присоединиолся если да то переписать поля!!!
+
+                    Users_online cMasg = new Users_online("test","test",android.os.Build.MODEL.toString());
+                    conectionlist=connectedlist.child(onlinekey);
+                    conectionlist.setValue(cMasg);
+
+            }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+          /*  myConnectionsRef.addListenerForSingleValueEvent(listconectionlistner = new ValueEventListener() {
 
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     if (dataSnapshot!=null&&dataSnapshot.getChildrenCount()==1) {
-                      //  System.out.println(dataSnapshot.getChildrenCount());
+                        //  System.out.println(dataSnapshot.getChildrenCount());
                         System.out.println(android.os.Build.MODEL);
                         conectionlist = connectedlist.push();
 
@@ -111,20 +166,22 @@ private String uid_my="";
                         conectionlist.onDisconnect().removeValue();
                     }
 
-               else if (dataSnapshot!=null||dataSnapshot.getChildrenCount()!=1) {
+                    else if (dataSnapshot!=null||dataSnapshot.getChildrenCount()!=1) {
 
 
 
-                        conectionlist.removeValue();
+                        //       conectionlist.removeValue();
+
+                    }
+
                 }
-//                    else {conectionlist.removeValue();}
-            }
 
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
 
                 }
-            });
+            });*/
+
 
 
             connectedRef.addValueEventListener(originalListener = new ValueEventListener() {
@@ -169,18 +226,22 @@ private String uid_my="";
     @Override
     protected void onFirebaseLoggedOut() {
         super.onFirebaseLoggedOut();
-        if(conectionlist!=null){
-            conectionlist.removeValue();}
-        if(con!=null){
-            con.removeValue();}
-
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
         final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+uid_my+"/connections");
         if(listconectionlistner!=null){
             myConnectionsRef.removeEventListener(listconectionlistner);}
 
+
         if(originalListener!=null){
             connectedRef.removeEventListener(originalListener);}
+
+        if(con!=null){
+            con.removeValue();}
+        if(conectionlist!=null){
+            conectionlist.removeValue();}
+
+
+
 
         System.out.println("РАЗРЫВ!!!!!!!!!!");
         Accont_info_my_sington.getInstance().clerar(); //может и не надо удалять
