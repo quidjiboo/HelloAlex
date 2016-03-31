@@ -24,7 +24,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     Firebase con;
 
     private String uid_my="";
-    Firebase conectionlist;
+    private Firebase conectionlist;
     ValueEventListener originalListener;
     ValueEventListener listconectionlistner;
     ValueEventListener zamena_list_online;
@@ -114,6 +114,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                         // add this device to my connections list
                         // this value could contain info about the device or a timestamp too
                         //   myConnectionsRef.removeValue();
+
                         con = myConnectionsRef.push();
 
                         //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
@@ -125,12 +126,14 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
                         //расеоментировать потом!!!
                         //    lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
+if(conectionlist==null)
                         conectionlist = listof_accs_online.push();
 
                         Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Users_online cMasg = new Users_online(dataSnapshot.child("My_name").getValue().toString(), android.os.Build.MODEL.toString());
+
+                                Users_online cMasg = new Users_online(dataSnapshot.child("My_name").getValue().toString(),uid_my, android.os.Build.MODEL.toString());
 
 
                                 conectionlist.setValue(cMasg);

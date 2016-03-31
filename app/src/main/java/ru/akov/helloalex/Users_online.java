@@ -6,6 +6,7 @@ package ru.akov.helloalex;
 public class Users_online {
 
     private String my_name;
+    private String uid;
 /*    private String data_last_connect;
     private Map<String,Boolean> connections;
     private long lastOnline;*/
@@ -19,11 +20,14 @@ public class Users_online {
 
 
 
-    public Users_online(String my_name,String phonemodel1) {
+    public Users_online(String my_name,String uid,String phonemodel1) {
         this.my_name = my_name;
-
+        this.uid = uid;
         this.phonemodel1 = phonemodel1;
 
+    }
+    public String getUid() {
+        return uid;
     }
     public String getmy_name() {
         return my_name;

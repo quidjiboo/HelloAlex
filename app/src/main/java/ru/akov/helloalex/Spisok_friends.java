@@ -25,11 +25,12 @@ public class Spisok_friends extends myFirebaseLoginBaseActivity {
         final ListView lvMain1 = (ListView) this.findViewById(R.id.listView_online);
         Listonline = new FirebaseListAdapter<Users_online>(this, Users_online.class,
           //      android.R.layout.simple_list_item_1, getFirebaseRef().child("Test123")) {
-               android.R.layout.simple_list_item_2, getFirebaseRef().child("onlineusers")) {
+               android.R.layout.simple_list_item_1, getFirebaseRef().child("onlineusers")) {
             @Override
             protected void populateView(View v, Users_online model, int position) {
                 ((TextView)v.findViewById(android.R.id.text1)).setText(model.getPhonemodel1());
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getmy_name());
+           //     ((TextView)v.findViewById(android.R.id.text2)).setText(model.getmy_name());
+
             }
         };
 

@@ -3,12 +3,17 @@ package ru.akov.helloalex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.FirebaseLoginError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by User on 18.03.2016.
@@ -26,11 +31,15 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
         final ListView lvMain1 = (ListView) this.findViewById(R.id.listView_online);
         Listonline = new FirebaseListAdapter<Users_online>(this, Users_online.class,
           //      android.R.layout.simple_list_item_1, getFirebaseRef().child("Test123")) {
-               android.R.layout.simple_list_item_2, getFirebaseRef().child("onlineusers")) {
+               android.R.layout.test_list_item, getFirebaseRef().child("onlineusers"))
+
+
+        {
             @Override
             protected void populateView(View v, Users_online model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getPhonemodel1());
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getmy_name());
+
+                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUid());
+         //       ((TextView)v.findViewById(android.R.id.text2)).setText(model.getPhonemodel1());
             }
         };
 
@@ -38,6 +47,28 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
 
         TextView edf = (TextView) findViewById(R.id.textView_my_online);
         edf.setText(Accont_info_my_sington.getInstance().getname());
+
+
+        lvMain1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
+                                    long id) {
+
+                TextView textView = (TextView) itemClicked;
+                String strText = textView.getText().toString();
+
+                System.out.println("Я ВЫБРАЛ ДРУГА!!!!!!!!!!" + strText);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("name_of_friend", strText);
+
+                getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid()).child("friends").push().setValue(map.get("name_of_friend"));
+
+
+                Toast.makeText(getApplicationContext(), ((TextView) itemClicked).getText(),
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
    // public void back(View view) {
