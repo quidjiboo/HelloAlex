@@ -1,6 +1,5 @@
 package ru.akov.helloalex;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -13,14 +12,14 @@ import com.firebase.ui.auth.core.FirebaseLoginError;
 /**
  * Created by User on 18.03.2016.
  */
-public class Spisok_online extends myFirebaseLoginBaseActivity {
+public class Spisok_friends extends myFirebaseLoginBaseActivity {
     My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.spisok_online);
+        setContentView(R.layout.spisok_friends);
         app = ((My_app) getApplicationContext());
 
         final ListView lvMain1 = (ListView) this.findViewById(R.id.listView_online);
@@ -90,15 +89,5 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
         Listonline.cleanup();
     }
 
-    public void OnclickMy_back(View view) {
-        Intent intent = new Intent(Spisok_online.this, MainActivity.class);
 
-        startActivity(intent);
-    }
-
-    public void next_scr_spisok_friends(View view) {
-        Intent intent = new Intent(Spisok_online.this, Spisok_friends.class);
-
-        startActivity(intent);
-    }
 }

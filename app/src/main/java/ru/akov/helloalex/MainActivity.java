@@ -250,4 +250,6 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         Accont_info_my_sington.getInstance().setname(name);
 
     }
+
+
 }

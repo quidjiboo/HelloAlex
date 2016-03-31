@@ -5,11 +5,11 @@ package ru.akov.helloalex;
  */
 public class Users_online {
 
-    private String My_name;
+    private String my_name;
 /*    private String data_last_connect;
     private Map<String,Boolean> connections;
     private long lastOnline;*/
-    private String provider;
+
     private String phonemodel1;
   //  private Boolean onlineu;
 
@@ -19,21 +19,18 @@ public class Users_online {
 
 
 
-    public Users_online(String My_name,String provider,String phonemodel1) {
-        this.My_name = My_name;
+    public Users_online(String my_name,String phonemodel1) {
+        this.my_name = my_name;
 
-        this.provider = provider;
         this.phonemodel1 = phonemodel1;
 
     }
-    public String getMy_name() {
-        return My_name;
+    public String getmy_name() {
+        return my_name;
     }
 
 
-    public String getProvider() {
-        return provider;
-    }
+
     public String getPhonemodel1() {
         return  phonemodel1;
     }

@@ -6,4 +6,5 @@ package ru.akov.helloalex;
 public interface Labal_change_my {
     void izmenit_label();
     void izmenit_singltone(String name);
+
 }

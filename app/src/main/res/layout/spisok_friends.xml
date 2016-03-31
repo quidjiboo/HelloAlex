@@ -25,41 +25,7 @@
             android:text="Large Text"
             android:id="@+id/textView_my_online" />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/verf"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/seredina"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_weight="0"
-        >
 
-        <Button
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="back"
-            android:id="@+id/back_list_test"
-            android:onClick="OnclickMy_back"
-            android:layout_weight="0"
-            />
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Friends"
-            android:id="@+id/button_my_next_friends"
-
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="next_scr_spisok_friends"
-            android:layout_weight="0"
-            />
-
-    </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

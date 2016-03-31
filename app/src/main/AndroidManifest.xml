@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         android:name=".My_app" >
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,8 +24,8 @@
         <activity android:name=".Spisok_online"
             android:label="@string/spisok_online_akk">
         </activity>
-        <activity android:name=".StartMainActivity"
-            android:label="@string/Start_scr">
+        <activity android:name=".Spisok_friends"
+            android:label="@string/spisok_friends">
         </activity>
 
     </application>

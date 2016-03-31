@@ -1,12 +1,8 @@
 package ru.akov.helloalex;
 
 import android.app.FragmentManager;
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 
 import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -20,14 +16,15 @@ import java.util.Map;
 /**
  * Created by Alexandr on 11.03.2016.
  */
-public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my {
+public abstract class myFirebaseLoginBaseActivity_backup extends FirebaseLoginBaseActivity implements Labal_change_my {
     Firebase con;
-
-    private String uid_my="";
     Firebase conectionlist;
+private String uid_my="";
+ 
+    private String onlinekey="";
     ValueEventListener originalListener;
     ValueEventListener listconectionlistner;
-    ValueEventListener zamena_list_online;
+
 
 
     public void set_mylistner(){
@@ -46,13 +43,11 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
                 if (snapshot.getValue() != null) {
                     izmenit_singltone(snapshot.getValue().toString());
-
                 } else {
                     izmenit_singltone("none");
                 }
 
-                //   izmenit_singltone(snapshot.getValue().toString());.
-                System.out.println("ОТРАБОТАЛ!!!! " + snapshot.getValue().toString());
+                //   izmenit_singltone(snapshot.getValue().toString());
                 izmenit_label();
                 //      TextView edf = (TextView) findViewById(R.id.textView_my);
                 //     edf.setText(Accont_info_my_sington.getInstance().getname());
@@ -66,10 +61,8 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
             }
         });
     }
-
     @Override
     protected void onFirebaseLoggedIn(AuthData authData) {
-
         uid_my=getAuth().getUid();
         if(con!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
             con.removeValue();}
@@ -93,16 +86,98 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
     //    izmenit_label();
 
-
-
-
-            final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
+            final Firebase connectedlist = new Firebase(getFirebaseRef()+"/connectionlist");
+          //  final Firebase myt_typ_Conne = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/type");
+            final Firebase myt_key_Conne = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid());
+            final Firebase myt_key_Conne_key = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/key");
             final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
             final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
             final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
-            final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid());
+
+        /*   myConnectionsRef.addValueEventListener(listconectionlistner = new ValueEventListener() {
 
 
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    myt_key_Conne.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if(snapshot!=null){
+                            onlinekey=snapshot.child("key").getValue().toString();
+                            System.out.println("ПРИ ПЕРВОМ ЗАПУСКЕ " +onlinekey);}
+                            // do some stuff once
+                        }
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
+                    if (dataSnapshot!=null&&dataSnapshot.getChildrenCount()==1&&onlinekey=="") {
+                      //  System.out.println(dataSnapshot.getChildrenCount());
+                        System.out.println(android.os.Build.MODEL);
+                        conectionlist = connectedlist.push();
+
+                        Users_online cMasg = new Users_online("test","test",android.os.Build.MODEL.toString());
+
+
+                        conectionlist.setValue(cMasg);
+                        onlinekey = conectionlist.getKey().toString();
+                        System.out.println("ВОТ ТАКОЙ КЛЮЧ СОЗДАЛ" + onlinekey);
+
+
+
+                        myt_key_Conne_key.setValue(onlinekey);
+
+
+                        conectionlist.onDisconnect().removeValue();
+                    }
+
+               // ОПРЕДЕЛИТЬ ИЗМЕНИЛСЯ ЛИ АЙДИ или парметр того кто присоединиолся если да то переписать поля!!!
+
+                    Users_online cMasg = new Users_online("test","test",android.os.Build.MODEL.toString());
+                    conectionlist=connectedlist.child(onlinekey);
+                    conectionlist.setValue(cMasg);
+
+            }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });*/
+          /*  myConnectionsRef.addListenerForSingleValueEvent(listconectionlistner = new ValueEventListener() {
+
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot!=null&&dataSnapshot.getChildrenCount()==1) {
+                        //  System.out.println(dataSnapshot.getChildrenCount());
+                        System.out.println(android.os.Build.MODEL);
+                        conectionlist = connectedlist.push();
+
+                        Users_online cMasg = new Users_online("test","test",android.os.Build.MODEL.toString());
+
+
+                        conectionlist.setValue(cMasg);
+                        conectionlist.onDisconnect().removeValue();
+                    }
+
+                    else if (dataSnapshot!=null||dataSnapshot.getChildrenCount()!=1) {
+
+
+
+                        //       conectionlist.removeValue();
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });*/
 
 
 
@@ -125,24 +200,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
                         //расеоментировать потом!!!
                         //    lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
-                        conectionlist = listof_accs_online.push();
 
-                        Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Users_online cMasg = new Users_online(dataSnapshot.child("My_name").getValue().toString(), android.os.Build.MODEL.toString());
-
-
-                                conectionlist.setValue(cMasg);
-                            }
-
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-
-                            }
-                        });
-
-                        conectionlist.onDisconnect().removeValue();
                     }
                 }
 
@@ -156,8 +214,8 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
         Accont_info_my_sington.getInstance().seauth(authData.toString());}
-        set_mylistner();
 
+        set_mylistner();
     }
 
 
@@ -167,22 +225,18 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
         super.onFirebaseLoggedOut();
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
         final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+uid_my+"/connections");
-        final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+uid_my);
-        if(zamena_list_online!=null){
-            Userref.removeEventListener(zamena_list_online);}
         if(listconectionlistner!=null){
             myConnectionsRef.removeEventListener(listconectionlistner);}
+
 
         if(originalListener!=null){
             connectedRef.removeEventListener(originalListener);}
 
-
-
         if(con!=null){
             con.removeValue();}
-
         if(conectionlist!=null){
             conectionlist.removeValue();}
+
 
 
 
