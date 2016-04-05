@@ -21,13 +21,13 @@ import java.util.Map;
  * Created by Alexandr on 11.03.2016.
  */
 public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my {
-    Firebase con;
+    static private   Firebase con;
 
-    private String uid_my="";
-    private Firebase conectionlist;
-    ValueEventListener originalListener;
-    ValueEventListener listconectionlistner;
-    ValueEventListener zamena_list_online;
+    static private String uid_my="";
+    static private Firebase conectionlist;
+   static private ValueEventListener originalListener;
+    static private ValueEventListener listconectionlistner;
+    static private ValueEventListener zamena_list_online;
 
 
     public void set_mylistner(){
@@ -69,8 +69,8 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
     @Override
     protected void onFirebaseLoggedIn(AuthData authData) {
-
-        uid_my=getAuth().getUid();
+        System.out.println("ВОТ ТАК ПОДКЛЮЧИЛСЯ ОПЯТЬ" +authData);
+      uid_my=getAuth().getUid();
         if(con!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
             con.removeValue();}
         if(!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
@@ -95,6 +95,11 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
 
+String listof_accs_online_string = "/onlineusers";
+String myConnectionsRef_string = "/users/"+getAuth().getUid()+"/connections";
+String lastOnlineRef_string = "/users/"+getAuth().getUid()+"/lastOnline";
+String connectedRef_string = "/.info/connected";
+String Userref_string ="/users/"+getAuth().getUid();
 
             final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
             final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
@@ -158,8 +163,9 @@ if(conectionlist==null)
 
 
 
-        Accont_info_my_sington.getInstance().seauth(authData.toString());}
-        set_mylistner();
+        Accont_info_my_sington.getInstance().seauth(authData.toString());
+            set_mylistner();}
+
 
     }
 

@@ -11,6 +11,8 @@ public class My_app extends Application {
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
 
     private Firebase firebaseRef;
+
+
     @Override
     public void onCreate() {
        super.onCreate();
@@ -19,7 +21,9 @@ public class My_app extends Application {
         if(firebaseRef==null){
 
 
-            firebaseRef = new Firebase(FIREBASE_UR1L);}
+            firebaseRef = new Firebase(FIREBASE_UR1L);
+
+        }
 
 
     }

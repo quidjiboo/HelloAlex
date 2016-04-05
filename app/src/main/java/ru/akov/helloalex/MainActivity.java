@@ -33,8 +33,10 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     private EditText inpuText;
     FirebaseListAdapter<ChatmessAlex> mListAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
 
