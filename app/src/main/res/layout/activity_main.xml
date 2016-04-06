@@ -109,7 +109,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_weight="0" >
-
+        <Button
+            android:id="@+id/showall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_send"
+            android:onClick="OnclickMy_showall"
+            android:layout_weight="0"
+            />
         <EditText
             android:id="@+id/messageText"
             android:layout_width="wrap_content"

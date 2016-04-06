@@ -26,7 +26,7 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.spisok_online);
-        app = ((My_app) getApplicationContext());
+       app = ((My_app) getApplicationContext());
 
         final ListView lvMain1 = (ListView) this.findViewById(R.id.listView_online);
         Listonline = new FirebaseListAdapter<Users_online>(this, Users_online.class,

@@ -13,14 +13,14 @@ import com.firebase.ui.auth.core.FirebaseLoginError;
  * Created by User on 18.03.2016.
  */
 public class Spisok_friends extends myFirebaseLoginBaseActivity {
-    My_app app;
+ My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.spisok_friends);
-        app = ((My_app) getApplicationContext());
+ app = ((My_app) getApplicationContext());
 
         final ListView lvMain1 = (ListView) this.findViewById(R.id.listView_online);
         Listonline = new FirebaseListAdapter<Users_online>(this, Users_online.class,

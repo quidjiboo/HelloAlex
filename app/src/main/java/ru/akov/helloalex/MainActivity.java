@@ -22,11 +22,13 @@ import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends myFirebaseLoginBaseActivity  {
 private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
-    My_app app;
+   static My_app app;
     //Костылёк потом переделать !!!
   //  static Firebase firebaseRef;
     static String  ipString="0.0.0.0";
@@ -254,4 +256,18 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     }
 
 
+    public void OnclickMy_showall(View view) {
+
+
+
+        if(getAuth().getAuth()!=null){
+
+
+
+
+        Map<String, Object> boolmay = new HashMap<String, Object>();
+           boolmay.put("showall", Boolean.TRUE);
+      getFirebaseRef().child("users/").child(getAuth().getUid()).child(con.getKey()).updateChildren(boolmay);
+    }
+    }
 }

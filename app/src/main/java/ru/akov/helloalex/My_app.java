@@ -19,7 +19,7 @@ public class My_app extends Application {
 
         Firebase.setAndroidContext(this);
         if(firebaseRef==null){
-
+System.out.println("Сделал firebaseRef");
 
             firebaseRef = new Firebase(FIREBASE_UR1L);
 

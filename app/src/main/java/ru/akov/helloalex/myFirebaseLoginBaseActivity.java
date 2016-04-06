@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by Alexandr on 11.03.2016.
  */
 public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my {
-    static private   Firebase con;
+    static    Firebase con;
 
     static private String uid_my="";
     static private Firebase conectionlist;
@@ -68,8 +68,9 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     }
 
     @Override
-    protected void onFirebaseLoggedIn(AuthData authData) {
-        System.out.println("ВОТ ТАК ПОДКЛЮЧИЛСЯ ОПЯТЬ" +authData);
+    protected void onFirebaseLoggedIn(final AuthData authData) {
+
+        System.out.println("ВОТ ТАК ПОДКЛЮЧИЛСЯ ОПЯТЬ" + authData);
       uid_my=getAuth().getUid();
         if(con!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
             con.removeValue();}
@@ -120,37 +121,21 @@ String Userref_string ="/users/"+getAuth().getUid();
                         // this value could contain info about the device or a timestamp too
                         //   myConnectionsRef.removeValue();
 
-                        con = myConnectionsRef.push();
+                        //  con = myConnectionsRef.push();
+                        con = listof_accs_online.push();
+
+                        Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
 
                         //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
-                        con.setValue(Boolean.TRUE);
-
+                        //        con.setValue(Boolean.TRUE);
+                        con.setValue(cMasg);
                         // when this device disconnects, remove it
                         con.onDisconnect().removeValue();
                         // when I disconnect, update the last time I was seen online
 
                         //расеоментировать потом!!!
                         //    lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
-if(conectionlist==null)
-                        conectionlist = listof_accs_online.push();
 
-                        Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                Users_online cMasg = new Users_online(dataSnapshot.child("My_name").getValue().toString(),uid_my, android.os.Build.MODEL.toString());
-
-
-                                conectionlist.setValue(cMasg);
-                            }
-
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-
-                            }
-                        });
-
-                        conectionlist.onDisconnect().removeValue();
                     }
                 }
 
@@ -161,6 +146,34 @@ if(conectionlist==null)
                 }
             });
 
+            /*if(conectionlist==null)
+                conectionlist = listof_accs_online.child(authData.getUid());
+
+            Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+
+
+
+                    User_online_id test = dataSnapshot.child("/connections").child(con.getKey()).getValue(User_online_id.class);
+//                    System.out.println(test.getshowall());
+                    if(test.getshowall()){
+                    Users_online cMasg = new Users_online(dataSnapshot.child("My_name").getValue().toString(), uid_my, android.os.Build.MODEL.toString());
+
+
+                    conectionlist.setValue(cMasg);}
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+
+            conectionlist.onDisconnect().removeValue();*/
 
 
         Accont_info_my_sington.getInstance().seauth(authData.toString());
