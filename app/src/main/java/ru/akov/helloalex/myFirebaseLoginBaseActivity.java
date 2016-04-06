@@ -1,12 +1,8 @@
 package ru.akov.helloalex;
 
 import android.app.FragmentManager;
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 
 import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -31,11 +27,11 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
     public void set_mylistner(){
-        getFirebaseRef().child("users").child(this.getAuth().getUid()).child("My_name").addValueEventListener(new ValueEventListener() {
+        getFirebaseRef().child("users").child(this.getAuth().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                System.out.println("ЗАШЁЛ ТАКИМИ ПОЛЯМИ" + snapshot.getValue());
+                System.out.println("ЗАШЁЛ ТАКИМИ ПОЛЯМИ" + snapshot.child("My_name").getValue());
 
                 //ПОЧИТАТЬ ПРО ИСКЛЮЧЕНИЯ!!!!
 /*if(snapshot.getValue()!=null){
@@ -44,15 +40,15 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 }*/
 
-                if (snapshot.getValue() != null) {
-                    izmenit_singltone(snapshot.getValue().toString());
+                if (snapshot.child("My_name").getValue() != null) {
+                    izmenit_singltone(snapshot.child("My_name").getValue().toString());
 
                 } else {
                     izmenit_singltone("none");
                 }
 
                 //   izmenit_singltone(snapshot.getValue().toString());.
-                System.out.println("ОТРАБОТАЛ!!!! " + snapshot.getValue().toString());
+                System.out.println("ОТРАБОТАЛ!!!! " + snapshot.child("My_name").getValue().toString());
                 izmenit_label();
                 //      TextView edf = (TextView) findViewById(R.id.textView_my);
                 //     edf.setText(Accont_info_my_sington.getInstance().getname());
@@ -69,9 +65,60 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
     @Override
     protected void onFirebaseLoggedIn(final AuthData authData) {
+        set_mylistner();
+        Accont_info_my_sington.getInstance().seauth(authData.toString());
+
+        final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
+        final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
+        final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
+        final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
+        final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid());
+
+
+
+
+
+        connectedRef.addValueEventListener(originalListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    // add this device to my connections list
+                    // this value could contain info about the device or a timestamp too
+                    //   myConnectionsRef.removeValue();
+
+                    //  con = myConnectionsRef.push();
+                    //    con = listof_accs_online.push();
+                    con=listof_accs_online.child(authData.getUid());
+
+                    Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
+
+                    //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
+                    //        con.setValue(Boolean.TRUE);
+                    con.setValue(cMasg);
+                    // when this device disconnects, remove it
+                    con.onDisconnect().removeValue();
+                    // when I disconnect, update the last time I was seen online
+
+                    //расеоментировать потом!!!
+                    //    lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+
+                System.err.println("Listener was cancelled at .info/connected");
+            }
+        });
 
         System.out.println("ВОТ ТАК ПОДКЛЮЧИЛСЯ ОПЯТЬ" + authData);
       uid_my=getAuth().getUid();
+
+
+
+
         if(con!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
             con.removeValue();}
         if(!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
@@ -102,49 +149,7 @@ String lastOnlineRef_string = "/users/"+getAuth().getUid()+"/lastOnline";
 String connectedRef_string = "/.info/connected";
 String Userref_string ="/users/"+getAuth().getUid();
 
-            final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
-            final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
-            final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
-            final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
-            final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid());
 
-
-
-
-
-            connectedRef.addValueEventListener(originalListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    boolean connected = snapshot.getValue(Boolean.class);
-                    if (connected) {
-                        // add this device to my connections list
-                        // this value could contain info about the device or a timestamp too
-                        //   myConnectionsRef.removeValue();
-
-                        //  con = myConnectionsRef.push();
-                        con = listof_accs_online.push();
-
-                        Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
-
-                        //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
-                        //        con.setValue(Boolean.TRUE);
-                        con.setValue(cMasg);
-                        // when this device disconnects, remove it
-                        con.onDisconnect().removeValue();
-                        // when I disconnect, update the last time I was seen online
-
-                        //расеоментировать потом!!!
-                        //    lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError error) {
-
-                    System.err.println("Listener was cancelled at .info/connected");
-                }
-            });
 
             /*if(conectionlist==null)
                 conectionlist = listof_accs_online.child(authData.getUid());
@@ -176,8 +181,8 @@ String Userref_string ="/users/"+getAuth().getUid();
             conectionlist.onDisconnect().removeValue();*/
 
 
-        Accont_info_my_sington.getInstance().seauth(authData.toString());
-            set_mylistner();}
+
+            }
 
 
     }

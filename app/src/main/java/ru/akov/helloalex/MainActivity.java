@@ -14,10 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
@@ -92,7 +89,6 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
 
-
     }
 
 
@@ -143,7 +139,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         System.out.println("ЧТО ТО ТИПА ТОГО onFirebaseLoginUserError!!!!!!!!!!");
         System.out.println(firebaseLoginError.toString());
                    dismissFirebaseLoginPrompt();
-                 showToast();
+        showToast();
 
     }
 
@@ -192,8 +188,8 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
                     Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();}
-        else{
-        newAcc(getFirebaseRef().getAuth());
+        else {
+            newAcc(getFirebaseRef().getAuth());
             }
 
     }
