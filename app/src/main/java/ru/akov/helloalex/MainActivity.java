@@ -89,6 +89,8 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
 
+
+
     }
 
 
@@ -263,7 +265,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
         Map<String, Object> boolmay = new HashMap<String, Object>();
            boolmay.put("showall", Boolean.TRUE);
-      getFirebaseRef().child("users/").child(getAuth().getUid()).child(con.getKey()).updateChildren(boolmay);
+      getFirebaseRef().child("users/").child(getAuth().getUid()).updateChildren(boolmay);
     }
     }
 }

@@ -67,7 +67,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     protected void onFirebaseLoggedIn(final AuthData authData) {
         set_mylistner();
         Accont_info_my_sington.getInstance().seauth(authData.toString());
-
+        final Firebase showall = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/showall");
         final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
         final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
         final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
@@ -102,6 +102,8 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
                     //расеоментировать потом!!!
                     //    lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
+                    getFirebaseRef().child("users").child(authData.getUid()).child("phonemodel").setValue(android.os.Build.MODEL.toString());
+
 
                 }
             }
@@ -112,6 +114,33 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                 System.err.println("Listener was cancelled at .info/connected");
             }
         });
+
+// ВОТ ТУТ ОСТАНОВИЛСЯ , НУЖНО СДЕЛАТЬ ОБЩЮЮ ОТСЛЕЖИВАЮЩЮЮ АКТИВНОСТЬ КОГДА ЮЗЕР ЗАЛОГИНЕН И ЕГО ТЕЛЕФОН СХОДИТСЯ С ПОСЛЕДНИМ ЛОГИНОМ КАРОЯЕ !
+ /*       Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean showall = dataSnapshot.child("/showall").getValue(Boolean.class);
+                if (!showall) {
+                    if (con != null&&getAuth()!=null) {
+                        con.removeValue();
+                    }
+                    else{
+                    Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
+
+                    //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
+                    //        con.setValue(Boolean.TRUE);
+                    con.setValue(cMasg);}
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });*/
+
 
         System.out.println("ВОТ ТАК ПОДКЛЮЧИЛСЯ ОПЯТЬ" + authData);
       uid_my=getAuth().getUid();
@@ -132,7 +161,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
         getFirebaseRef().child("users").child(authData.getUid()).child("provider").setValue(map.get("provider"));
         getFirebaseRef().child("users").child(authData.getUid()).child("displayName").setValue(map.get("displayName"));
            // getFirebaseRef().child("users").child(authData.getUid()).child("My_name").setValue(Accont_info_my_sington.getInstance().getname());
-
+            getFirebaseRef().child("users").child(authData.getUid()).child("phonemodel").setValue(android.os.Build.MODEL.toString());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
 
        // getFirebaseRef().child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
@@ -143,11 +172,11 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
 
-String listof_accs_online_string = "/onlineusers";
+/*String listof_accs_online_string = "/onlineusers";
 String myConnectionsRef_string = "/users/"+getAuth().getUid()+"/connections";
 String lastOnlineRef_string = "/users/"+getAuth().getUid()+"/lastOnline";
 String connectedRef_string = "/.info/connected";
-String Userref_string ="/users/"+getAuth().getUid();
+String Userref_string ="/users/"+getAuth().getUid();*/
 
 
 
@@ -179,6 +208,9 @@ String Userref_string ="/users/"+getAuth().getUid();
             });
 
             conectionlist.onDisconnect().removeValue();*/
+
+
+
 
 
 
