@@ -22,12 +22,13 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     static private String uid_my="";
     static private Firebase conectionlist;
    static private ValueEventListener originalListener;
-    static private ValueEventListener listconectionlistner;
+    static private ValueEventListener namechange;
+   // static private ValueEventListener listconectionlistner;
     static private ValueEventListener zamena_list_online;
 
 
     public void set_mylistner(){
-        getFirebaseRef().child("users").child(this.getAuth().getUid()).addValueEventListener(new ValueEventListener() {
+        getFirebaseRef().child("users").child(this.getAuth().getUid()).addValueEventListener(namechange = new  ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
@@ -106,6 +107,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
                 }
+
             }
 
             @Override
@@ -115,22 +117,27 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
             }
         });
 
-// ВОТ ТУТ ОСТАНОВИЛСЯ , НУЖНО СДЕЛАТЬ ОБЩЮЮ ОТСЛЕЖИВАЮЩЮЮ АКТИВНОСТЬ КОГДА ЮЗЕР ЗАЛОГИНЕН И ЕГО ТЕЛЕФОН СХОДИТСЯ С ПОСЛЕДНИМ ЛОГИНОМ КАРОЯЕ !
- /*       Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
+// вродебы всё работает
+        Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean showall = dataSnapshot.child("/showall").getValue(Boolean.class);
-                if (!showall) {
+                if (!showall&&getFirebaseRef().getAuth()!=null) {
                     if (con != null&&getAuth()!=null) {
                         con.removeValue();
                     }
-                    else{
+
+                }
+                if (showall&&getFirebaseRef().getAuth()!=null){
+                    System.out.print("ТУТУТТУТУ");
+                    if(con==null){
+                        con=listof_accs_online.child(authData.getUid());  }
+
                     Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
 
                     //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
                     //        con.setValue(Boolean.TRUE);
                     con.setValue(cMasg);}
-                }
 
 
             }
@@ -139,7 +146,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });*/
+        });
 
 
         System.out.println("ВОТ ТАК ПОДКЛЮЧИЛСЯ ОПЯТЬ" + authData);
@@ -227,10 +234,11 @@ String Userref_string ="/users/"+getAuth().getUid();*/
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
         final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+uid_my+"/connections");
         final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+uid_my);
+
         if(zamena_list_online!=null){
             Userref.removeEventListener(zamena_list_online);}
-        if(listconectionlistner!=null){
-            myConnectionsRef.removeEventListener(listconectionlistner);}
+        if(namechange!=null){
+            Userref.removeEventListener(namechange);}
 
         if(originalListener!=null){
             connectedRef.removeEventListener(originalListener);}

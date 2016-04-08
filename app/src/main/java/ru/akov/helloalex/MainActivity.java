@@ -14,7 +14,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
@@ -32,6 +35,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     private EditText inpuText;
     FirebaseListAdapter<ChatmessAlex> mListAdapter;
 
+    static private ValueEventListener zamena_list_online1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
              TextView edf = (TextView) findViewById(R.id.textView_my);
              edf.setText(Accont_info_my_sington.getInstance().getname());
+
 
 
 
@@ -200,7 +205,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     public void button_my(View view) {
 
 
-       logout();
+        logout();
 
        getFirebaseRef().unauth();
      //   Firebase.goOffline();
@@ -258,7 +263,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
 
 
-        if(getAuth().getAuth()!=null){
+        if(getFirebaseRef().getAuth()!=null){
 
 
 
