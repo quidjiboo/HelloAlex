@@ -1,10 +1,16 @@
 package ru.akov.helloalex;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,21 +27,33 @@ import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+;
 
+
+import java.text.BreakIterator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class MainActivity extends myFirebaseLoginBaseActivity  {
-private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
-   static My_app app;
+public class MainActivity extends myFirebaseLoginBaseActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
+    static My_app app;
     //Костылёк потом переделать !!!
-  //  static Firebase firebaseRef;
-    static String  ipString="0.0.0.0";
+    //  static Firebase firebaseRef;
+    static String ipString = "0.0.0.0";
     private EditText inpuText;
     FirebaseListAdapter<ChatmessAlex> mListAdapter;
 
+
     static private ValueEventListener zamena_list_online1;
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    EditText mLatitudeText;
+    EditText mLongitudeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +61,25 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
         super.onCreate(savedInstanceState);
 
-        WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        mGoogleApiClient.connect();
+
+
+  /*      WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInf = wifiMan.getConnectionInfo();
         int ipAddress = wifiInf.getIpAddress();
         String ipString = String.format("%d.%d.%d.%d",
                 (ipAddress & 0xff),
                 (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff),
-                (ipAddress >> 24 & 0xff));
+                (ipAddress >> 24 & 0xff));*/
 
         setContentView(R.layout.activity_main);
         app = ((My_app) getApplicationContext());
@@ -69,53 +98,45 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         });
 
 
-
-        final ListView   lvMain = (ListView) this.findViewById(R.id.listViewAkov);
+        final ListView lvMain = (ListView) this.findViewById(R.id.listViewAkov);
 
         mListAdapter = new FirebaseListAdapter<ChatmessAlex>(this, ChatmessAlex.class,
                 android.R.layout.two_line_list_item, getFirebaseRef().child("Test123")) {
             @Override
             protected void populateView(View v, ChatmessAlex model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getName());
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
+                ((TextView) v.findViewById(android.R.id.text1)).setText(model.getName());
+                ((TextView) v.findViewById(android.R.id.text2)).setText(model.getText());
             }
         };
 
-      lvMain.setAdapter(mListAdapter);
+        lvMain.setAdapter(mListAdapter);
 
         this.findViewById(R.id.listViewAkov).setFocusable(true);
         this.findViewById(R.id.listViewAkov).requestFocus();
 
 
-
-             TextView edf = (TextView) findViewById(R.id.textView_my);
-             edf.setText(Accont_info_my_sington.getInstance().getname());
-
-
-
-
+        TextView edf = (TextView) findViewById(R.id.textView_my);
+        edf.setText(Accont_info_my_sington.getInstance().getname());
 
 
     }
 
 
-
-
-    public void sendMessage(){
+    public void sendMessage() {
 
         String message = inpuText.getText().toString();
-       if(!message.equals("")){
-           Random rand = new Random();
-           String author = Accont_info_my_sington.getInstance().getname() ;
+        if (!message.equals("")) {
+            Random rand = new Random();
+            String author = Accont_info_my_sington.getInstance().getname();
 
-          ChatmessAlex cMasg = new ChatmessAlex(author,message);
+            ChatmessAlex cMasg = new ChatmessAlex(author, message);
 
-           getFirebaseRef().child("Test123").child("-KCVXxZze4WNA4gRPrWF").setValue(cMasg);
+            getFirebaseRef().child("Test123").child("-KCVXxZze4WNA4gRPrWF").setValue(cMasg);
 
 
-           inpuText.setText("");
+            inpuText.setText("");
 
-       }
+        }
 
     }
 
@@ -129,8 +150,8 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     protected Firebase getFirebaseRef() {
 
 
-        return                app.getFirebaseRef();
-           //     firebaseRef;
+        return app.getFirebaseRef();
+        //     firebaseRef;
 
 
     }
@@ -145,7 +166,7 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
         System.out.println("ЧТО ТО ТИПА ТОГО onFirebaseLoginUserError!!!!!!!!!!");
         System.out.println(firebaseLoginError.toString());
-                   dismissFirebaseLoginPrompt();
+        dismissFirebaseLoginPrompt();
         showToast();
 
     }
@@ -158,46 +179,47 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
+
     @Override
     protected void onStart() {
         super.onStart();
         // All providers are optional! Remove any you don't want.
- //   if(getFirebaseRef().getAuth()==null)
+        //   if(getFirebaseRef().getAuth()==null)
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
 
     }
 
 
-
     public void OnclickMy_test(View view) {
 
-    //    Firebase.goOnline();
+        //    Firebase.goOnline();
 
-        if (getFirebaseRef().getAuth()!=null){
+        if (getFirebaseRef().getAuth() != null) {
 
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Пользователь" + getFirebaseRef().getAuth().getUid()  + "Разлонтесь!",
+                    "Пользователь" + getFirebaseRef().getAuth().getUid() + "Разлонтесь!",
                     Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();}
-        else{
+            toast.show();
+        } else {
             System.out.println("такой пользователь подключен " + getFirebaseRef().getAuth());
             showFirebaseLoginPrompt();
         }
 
-     //   getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        //   getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
+
     public void button_my_new_acc(View view) {
-        if (getFirebaseRef().getAuth()!=null){
+        if (getFirebaseRef().getAuth() != null) {
 
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Пользователь" + getFirebaseRef().getAuth().getUid()  + "Разлонтесь!",
+                    "Пользователь" + getFirebaseRef().getAuth().getUid() + "Разлонтесь!",
                     Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();}
-        else {
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        } else {
             newAcc(getFirebaseRef().getAuth());
-            }
+        }
 
     }
 
@@ -207,30 +229,29 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
 
         logout();
 
-       getFirebaseRef().unauth();
-     //   Firebase.goOffline();
+        getFirebaseRef().unauth();
+        //   Firebase.goOffline();
 
 
-
-     //   app.remove();
+        //   app.remove();
     }
-
-
-
-
-
 
 
     @Override
     protected void onStop() {
+
+        mGoogleApiClient.disconnect();
+
         super.onStop();
-    //    mListAdapter.cleanup();
+        //    mListAdapter.cleanup();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
-      //  mListAdapter.cleanup();
+        //  mListAdapter.cleanup();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -251,9 +272,10 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
         TextView edf = (TextView) findViewById(R.id.textView_my);
         edf.setText(Accont_info_my_sington.getInstance().getname());
     }
+
     @Override
     public void
-    izmenit_singltone(String name){
+    izmenit_singltone(String name) {
         Accont_info_my_sington.getInstance().setname(name);
 
     }
@@ -262,15 +284,46 @@ private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.fir
     public void OnclickMy_showall(View view) {
 
 
-
-        if(getFirebaseRef().getAuth()!=null){
-
+        if (getFirebaseRef().getAuth() != null) {
 
 
-
-        Map<String, Object> boolmay = new HashMap<String, Object>();
-           boolmay.put("showall", Boolean.TRUE);
-      getFirebaseRef().child("users/").child(getAuth().getUid()).updateChildren(boolmay);
+            Map<String, Object> boolmay = new HashMap<String, Object>();
+            boolmay.put("showall", Boolean.TRUE);
+            getFirebaseRef().child("users/").child(getAuth().getUid()).updateChildren(boolmay);
+        }
     }
+
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+        }
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
