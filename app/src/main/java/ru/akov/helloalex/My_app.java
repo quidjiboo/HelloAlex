@@ -4,6 +4,9 @@ import android.app.Application;
 
 import com.firebase.client.Firebase;
 
+import android.content.Context;
+
+
 /**
  * Created by User on 21.03.2016.
  */
@@ -16,6 +19,8 @@ public class My_app extends Application {
     @Override
     public void onCreate() {
        super.onCreate();
+
+
 
         Firebase.setAndroidContext(this);
         if(firebaseRef==null){

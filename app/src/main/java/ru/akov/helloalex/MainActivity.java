@@ -8,6 +8,7 @@ import android.location.Location;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -27,9 +28,14 @@ import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
 ;
 
 
@@ -39,7 +45,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends myFirebaseLoginBaseActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        ConnectionCallbacks, OnConnectionFailedListener {
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
     static My_app app;
     //Костылёк потом переделать !!!
@@ -52,8 +58,8 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     static private ValueEventListener zamena_list_online1;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
-    EditText mLatitudeText;
-    EditText mLongitudeText;
+    static String mLatitudeText;
+    static String mLongitudeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -297,7 +303,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     @Override
     public void onConnected(Bundle connectionHint) {
 
-
+        System.out.println("КООРДИНАТЫ_РАЗ_РАЗ!!!!!!!!!!");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -306,13 +312,20 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            System.out.println("ВЫШЕЛ!!!!!!!!!!!");
             return;
         }
+        System.out.println("ВСё Ок!!!!!!!!!!!");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+            System.out.println("КООРДИНАТЫ!!!!!!!!!!");
+            System.out.println(mLastLocation.getLatitude());
+            System.out.println(mLastLocation.getLongitude());
+            mLatitudeText = "test";
+            mLongitudeText = "test";
+            mLatitudeText = (String.valueOf(mLastLocation.getLatitude()).toString());
+            mLongitudeText = (String.valueOf(mLastLocation.getLongitude()).toString());
         }
     }
 
@@ -325,5 +338,15 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    protected void createLocationRequest() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+    public void OnclickMy_setGPS(View view) {
+        createLocationRequest();
     }
 }

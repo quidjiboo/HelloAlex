@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.FirebaseLoginError;
+import com.google.android.gms.location.LocationRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,6 +70,15 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
 
             }
         });
+
+        TextView edf1 = (TextView) findViewById(R.id.textView_my_Latitude);
+
+       edf1.setText(MainActivity.mLatitudeText);
+
+        TextView edf2 = (TextView) findViewById(R.id.textView_my_Longitude);
+      edf2.setText(MainActivity.mLongitudeText);
+
+
     }
 
    // public void back(View view) {
@@ -132,4 +142,6 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
 
         startActivity(intent);
     }
+
+
 }
