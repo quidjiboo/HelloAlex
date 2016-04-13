@@ -3,6 +3,7 @@ package ru.akov.helloalex;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.wifi.WifiInfo;
@@ -33,8 +34,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 ;
 
@@ -60,7 +68,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     Location mLastLocation;
     static String mLatitudeText;
     static String mLongitudeText;
-
+    LocationRequest mLocationRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -76,6 +84,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
                     .build();
         }
         mGoogleApiClient.connect();
+
 
 
   /*      WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -341,10 +350,54 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     }
 
     protected void createLocationRequest() {
-        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates df = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                    {   System.out.println("SUCCESS");
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+
+                        break;}
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {System.out.println("RESOLUTION_REQUIRED");
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(MainActivity.this, 0x1);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                    {    System.out.println("SETTINGS_CHANGE_UNAVAILABLE");
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+
+                        break;}
+                }
+
+            }
+        });
+
     }
     public void OnclickMy_setGPS(View view) {
         createLocationRequest();
