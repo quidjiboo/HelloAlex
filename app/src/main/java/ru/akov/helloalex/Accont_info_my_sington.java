@@ -17,11 +17,14 @@ public class Accont_info_my_sington {
         mail="";
         name_use_afterlogin="new instane";
     }
+    public static void  initInstance() {
+        if(instance==null){
+            instance = new Accont_info_my_sington();   /// спорное решение !!!
+        }
+    }
 
     public static synchronized Accont_info_my_sington getInstance() {
-        if(instance==null){
-            instance = new Accont_info_my_sington();
-        }
+
         return instance;
     }
 
@@ -45,5 +48,6 @@ public class Accont_info_my_sington {
         mail="";
         name_for_log="";
     }
+
 
 }

@@ -13,6 +13,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -54,6 +55,8 @@ import java.util.Random;
 
 public class MainActivity extends myFirebaseLoginBaseActivity implements
         ConnectionCallbacks, OnConnectionFailedListener {
+
+
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
     static My_app app;
     //Костылёк потом переделать !!!
@@ -64,11 +67,13 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
 
 
     static private ValueEventListener zamena_list_online1;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
+    static private GoogleApiClient mGoogleApiClient;
+    static private  Location mLastLocation;
     static String mLatitudeText;
     static String mLongitudeText;
-    LocationRequest mLocationRequest;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -83,6 +88,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
                     .addApi(LocationServices.API)
                     .build();
         }
+        if(!mGoogleApiClient.isConnected())
         mGoogleApiClient.connect();
 
 
@@ -201,7 +207,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
         // All providers are optional! Remove any you don't want.
         //   if(getFirebaseRef().getAuth()==null)
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
-
+        mGoogleApiClient.connect();
     }
 
 
@@ -350,7 +356,9 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     }
 
     protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
+
+        System.out.println("createLocationRequest АУАУАУАУ");
+        LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);

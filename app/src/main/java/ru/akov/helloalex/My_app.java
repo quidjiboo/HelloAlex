@@ -29,7 +29,7 @@ System.out.println("Сделал firebaseRef");
             firebaseRef = new Firebase(FIREBASE_UR1L);
 
         }
-
+        Accont_info_my_sington.initInstance();
 
     }
 
