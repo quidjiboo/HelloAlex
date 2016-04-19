@@ -1,6 +1,8 @@
 package ru.akov.helloalex;
 
 import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,8 +12,18 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
+import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginError;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +31,8 @@ import java.util.Map;
 /**
  * Created by User on 18.03.2016.
  */
-public class Spisok_online extends myFirebaseLoginBaseActivity {
+public class Spisok_online extends myFirebaseLoginBaseActivity  {
+
     My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
@@ -71,12 +84,6 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
             }
         });
 
-        TextView edf1 = (TextView) findViewById(R.id.textView_my_Latitude);
-
-       edf1.setText(MainActivity.mLatitudeText);
-
-        TextView edf2 = (TextView) findViewById(R.id.textView_my_Longitude);
-      edf2.setText(MainActivity.mLongitudeText);
 
 
     }
@@ -114,11 +121,21 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+ app.mGoogleApiClient.connect();
+
+        createLocationRequest();
+
+    }
     @Override
     protected void onStop() {
         super.onStop();
         //    mListAdapter.cleanup();
+        app.stopLocationUpdates();
+        app.mGoogleApiClient.disconnect();
     }
     @Override
     protected void onPause() {
@@ -141,6 +158,87 @@ public class Spisok_online extends myFirebaseLoginBaseActivity {
         Intent intent = new Intent(Spisok_online.this, Spisok_friends.class);
 
         startActivity(intent);
+    }
+
+
+
+
+
+    public void GPS_coord(View view) {
+
+        String mLatitudeText = "test";
+        String mLongitudeText = "test";
+        if(app.mLastLocation!=null){
+            mLatitudeText = (String.valueOf(app.mLastLocation.getLatitude()).toString());
+        mLongitudeText = (String.valueOf(app.mLastLocation.getLongitude()).toString());
+
+        TextView edf1 = (TextView) findViewById(R.id.textView_my_Latitude);
+
+        edf1.setText(mLatitudeText);
+
+        TextView edf2 = (TextView) findViewById(R.id.textView_my_Longitude);
+        edf2.setText(mLongitudeText);}
+    }
+
+
+    protected void createLocationRequest() {
+
+        System.out.println("createLocationRequest АУАУАУАУ");
+        app.mLocationRequest = new LocationRequest();
+        app.mLocationRequest.setInterval(10000);
+        app.mLocationRequest.setFastestInterval(5000);
+        app.mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest( app.mLocationRequest);
+        builder.setAlwaysShow(true);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(app.mGoogleApiClient,
+                        builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates df = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                    {   System.out.println("SUCCESS");
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+
+                        break;}
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {System.out.println("RESOLUTION_REQUIRED");
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(Spisok_online.this, 0x1);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                    {    System.out.println("SETTINGS_CHANGE_UNAVAILABLE");
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+
+                        break;}
+                }
+
+            }
+        });
+
+    }
+
+    public void OnclickMy_setGPS(View view) {
+        app.startLocationUpdates();
+
+       // createLocationRequest();
     }
 
 

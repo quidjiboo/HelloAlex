@@ -53,8 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class MainActivity extends myFirebaseLoginBaseActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener {
+public class MainActivity extends myFirebaseLoginBaseActivity  {
 
 
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
@@ -67,8 +66,8 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
 
 
     static private ValueEventListener zamena_list_online1;
-    static private GoogleApiClient mGoogleApiClient;
-    static private  Location mLastLocation;
+   // public static GoogleApiClient mGoogleApiClient;
+   // static public  Location mLastLocation;
     static String mLatitudeText;
     static String mLongitudeText;
 
@@ -81,15 +80,15 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
         super.onCreate(savedInstanceState);
 
 
-        if (mGoogleApiClient == null) {
+       /* if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
         }
-        if(!mGoogleApiClient.isConnected())
-        mGoogleApiClient.connect();
+        if(!mGoogleApiClient.isConnected())*/
+
 
 
 
@@ -207,7 +206,30 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
         // All providers are optional! Remove any you don't want.
         //   if(getFirebaseRef().getAuth()==null)
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
-        mGoogleApiClient.connect();
+       // app.mGoogleApiClient.connect();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+
+            ActivityCompat.requestPermissions(
+                    MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},1);
+
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Недостаточно прав у приложения",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+
+
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            System.out.println("ВЫШЕЛ!!!!!!!!!!!");
+            return;
+        }
     }
 
 
@@ -261,7 +283,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     @Override
     protected void onStop() {
 
-        mGoogleApiClient.disconnect();
+     //   app.mGoogleApiClient.disconnect();
 
         super.onStop();
         //    mListAdapter.cleanup();
@@ -315,99 +337,8 @@ public class MainActivity extends myFirebaseLoginBaseActivity implements
     }
 
 
-    @Override
-    public void onConnected(Bundle connectionHint) {
-
-        System.out.println("КООРДИНАТЫ_РАЗ_РАЗ!!!!!!!!!!");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            System.out.println("ВЫШЕЛ!!!!!!!!!!!");
-            return;
-        }
-        System.out.println("ВСё Ок!!!!!!!!!!!");
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-            System.out.println("КООРДИНАТЫ!!!!!!!!!!");
-            System.out.println(mLastLocation.getLatitude());
-            System.out.println(mLastLocation.getLongitude());
-            mLatitudeText = "test";
-            mLongitudeText = "test";
-            mLatitudeText = (String.valueOf(mLastLocation.getLatitude()).toString());
-            mLongitudeText = (String.valueOf(mLastLocation.getLongitude()).toString());
-        }
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    protected void createLocationRequest() {
-
-        System.out.println("createLocationRequest АУАУАУАУ");
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
-                        builder.build());
 
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates df = result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                    {   System.out.println("SUCCESS");
-                        // All location settings are satisfied. The client can
-                        // initialize location requests here.
-
-                        break;}
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-                        try {System.out.println("RESOLUTION_REQUIRED");
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(MainActivity.this, 0x1);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                    {    System.out.println("SETTINGS_CHANGE_UNAVAILABLE");
-                        // Location settings are not satisfied. However, we have no way
-                        // to fix the settings so we won't show the dialog.
-
-                        break;}
-                }
-
-            }
-        });
-
-    }
-    public void OnclickMy_setGPS(View view) {
-        createLocationRequest();
-    }
 }

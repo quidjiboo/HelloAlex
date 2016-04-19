@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Alexandr on 11.03.2016.
  */
-public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my {
+public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my{
     static    Firebase con;
 
     static private String uid_my="";

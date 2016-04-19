@@ -135,13 +135,7 @@
             android:onClick="OnclickMy"
             android:layout_weight="0"
             />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="tGPS"
-            android:id="@+id/button"
-            android:onClick="OnclickMy_setGPS"
-            android:layout_weight="0" />
+
 
 
     </LinearLayout>
