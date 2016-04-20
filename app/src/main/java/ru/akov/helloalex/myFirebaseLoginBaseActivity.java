@@ -50,7 +50,9 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
                 //   izmenit_singltone(snapshot.getValue().toString());.
                 System.out.println("ОТРАБОТАЛ!!!! " + snapshot.child("My_name").getValue().toString());
+
                 izmenit_label();
+
                 //      TextView edf = (TextView) findViewById(R.id.textView_my);
                 //     edf.setText(Accont_info_my_sington.getInstance().getname());
 

@@ -45,10 +45,22 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
     protected LocationRequest mLocationRequest;
     protected Location mLastLocation;
     protected Location mCurrentLocation;
+    protected Spisok_online test;
 
     String mLatitudeText = "test";
     String mLongitudeText = "test";
     private Firebase firebaseRef;
+
+    interface MyCallback{
+        void callBackReturn();
+        void lastlocation();
+    }
+
+    MyCallback myCallback;
+
+    void registerCallBack(MyCallback callback){
+        this.myCallback = callback;
+    }
 
     protected synchronized void buildGoogleApiClient() {
 
@@ -163,9 +175,11 @@ System.out.println("Сделал firebaseRef");
             System.out.println("КООРДИНАТЫ!!!!!!!!!!");
             System.out.println(mLastLocation.getLatitude());
             System.out.println(mLastLocation.getLongitude());
+            myCallback.lastlocation();
 
-
-    }}
+    }
+        startLocationUpdates();
+    }
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -187,7 +201,9 @@ System.out.println("Сделал firebaseRef");
 
             mLatitudeText = (String.valueOf(mCurrentLocation.getLatitude()).toString());
             mLongitudeText = (String.valueOf(mCurrentLocation.getLongitude()).toString());
-            //  updateUI();
+
+            myCallback.callBackReturn();
+
              Toast.makeText(this, location.toString(),
                     Toast.LENGTH_SHORT).show();
         }

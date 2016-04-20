@@ -31,16 +31,19 @@ import java.util.Map;
 /**
  * Created by User on 18.03.2016.
  */
-public class Spisok_online extends myFirebaseLoginBaseActivity  {
+public class Spisok_online extends myFirebaseLoginBaseActivity implements  My_app.MyCallback {
 
     My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.spisok_online);
        app = ((My_app) getApplicationContext());
+        app.registerCallBack(this);
 
         final ListView lvMain1 = (ListView) this.findViewById(R.id.listView_online);
         Listonline = new FirebaseListAdapter<Users_online>(this, Users_online.class,
@@ -86,6 +89,7 @@ public class Spisok_online extends myFirebaseLoginBaseActivity  {
 
 
 
+
     }
 
    // public void back(View view) {
@@ -121,6 +125,7 @@ public class Spisok_online extends myFirebaseLoginBaseActivity  {
 
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -128,6 +133,7 @@ public class Spisok_online extends myFirebaseLoginBaseActivity  {
  app.mGoogleApiClient.connect();
 
         createLocationRequest();
+
 
     }
     @Override
@@ -162,14 +168,11 @@ public class Spisok_online extends myFirebaseLoginBaseActivity  {
 
 
 
-
-
-    public void GPS_coord(View view) {
-
-        String mLatitudeText = "test";
-        String mLongitudeText = "test";
-        if(app.mLastLocation!=null){
-            mLatitudeText = (String.valueOf(app.mLastLocation.getLatitude()).toString());
+public void lastcoord(){
+    String mLatitudeText = "test";
+    String mLongitudeText = "test";
+    if(app.mLastLocation!=null){
+        mLatitudeText = (String.valueOf(app.mLastLocation.getLatitude()).toString());
         mLongitudeText = (String.valueOf(app.mLastLocation.getLongitude()).toString());
 
         TextView edf1 = (TextView) findViewById(R.id.textView_my_Latitude);
@@ -178,6 +181,11 @@ public class Spisok_online extends myFirebaseLoginBaseActivity  {
 
         TextView edf2 = (TextView) findViewById(R.id.textView_my_Longitude);
         edf2.setText(mLongitudeText);}
+}
+
+    public void GPS_coord(View view) {
+
+
     }
 
 
@@ -236,10 +244,33 @@ public class Spisok_online extends myFirebaseLoginBaseActivity  {
     }
 
     public void OnclickMy_setGPS(View view) {
-        app.startLocationUpdates();
+       // app.startLocationUpdates();
 
        // createLocationRequest();
     }
 
 
+    @Override
+    public void callBackReturn() {
+        System.out.print("КАЛЛ БЭК");
+        String mLatitudeText = "test";
+        String mLongitudeText = "test";
+        if(app.mCurrentLocation!=null){
+            mLatitudeText = (String.valueOf(app.mCurrentLocation.getLatitude()).toString());
+            mLongitudeText = (String.valueOf(app.mCurrentLocation.getLongitude()).toString());
+
+            TextView edf1 = (TextView) findViewById(R.id.textView_my_Latitude);
+
+            edf1.setText(mLatitudeText);
+
+            TextView edf2 = (TextView) findViewById(R.id.textView_my_Longitude);
+            edf2.setText(mLongitudeText);}
+
+
+    }
+
+    @Override
+    public void lastlocation() {
+        lastcoord();
+    }
 }
