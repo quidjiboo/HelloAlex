@@ -39,13 +39,14 @@ import java.util.Date;
 /**
  * Created by User on 21.03.2016.
  */
-public class My_app extends Application implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+public class My_app extends Application implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, ResultCallback<LocationSettingsResult> {
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
     protected GoogleApiClient mGoogleApiClient;
     protected LocationRequest mLocationRequest;
     protected Location mLastLocation;
     protected Location mCurrentLocation;
     protected Spisok_online test;
+    protected LocationSettingsRequest mLocationSettingsRequest;
 
     String mLatitudeText = "test";
     String mLongitudeText = "test";
@@ -108,6 +109,10 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
        super.onCreate();
 
         buildGoogleApiClient();
+        createLocationRequest();
+        buildLocationSettingsRequest();
+
+
 
         Firebase.setAndroidContext(this);
         if(firebaseRef==null){
@@ -176,6 +181,7 @@ System.out.println("Сделал firebaseRef");
             myCallback.lastlocation();
 
     }
+        checkLocationSettings();
         startLocationUpdates();
     }
 
@@ -192,6 +198,7 @@ System.out.println("Сделал firebaseRef");
 
     @Override
     public void onLocationChanged(Location location) {
+
         System.out.println("НОВЫЕ КООРДИНАТЫ!!!!!!!!!!");
         mCurrentLocation = location;
 
@@ -206,4 +213,122 @@ System.out.println("Сделал firebaseRef");
                     Toast.LENGTH_SHORT).show();
         }
     }
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(10000);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(5000);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+    }
+
+    /**
+     * Uses a {@link com.google.android.gms.location.LocationSettingsRequest.Builder} to build
+     * a {@link com.google.android.gms.location.LocationSettingsRequest} that is used for checking
+     * if a device has the needed location settings.
+     */
+    protected void buildLocationSettingsRequest() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.setAlwaysShow(true);
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
+    }
+    protected void checkLocationSettings() {
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(
+                        mGoogleApiClient,
+                        mLocationSettingsRequest
+                );
+        result.setResultCallback(this);
+    }
+
+    @Override
+    public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+    //    final Status status = result.getStatus();
+        final Status status = locationSettingsResult.getStatus();
+     //   final LocationSettingsStates df = result.getLocationSettingsStates();
+        switch (status.getStatusCode()) {
+            case LocationSettingsStatusCodes.SUCCESS:
+            {   System.out.println("SUCCESS");
+                System.out.println("Настройки локайшен соответсвуют требованиям приложения ");
+                // All location settings are satisfied. The client can
+                // initialize location requests here.
+
+                break;}
+            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED: {
+                System.out.println("НЕ ПАШЕТ!");
+                myCallback.badpremissioninsettings_gps(status);
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+
+            }
+            break;
+            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+            {    System.out.println("SETTINGS_CHANGE_UNAVAILABLE");
+                // Location settings are not satisfied. However, we have no way
+                // to fix the settings so we won't show the dialog.
+
+                break;}
+        }
+    }
+
+    /*protected void createLocationRequest() {
+
+        System.out.println("createLocationRequest АУАУАУАУ");
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest( mLocationRequest);
+
+        builder.setAlwaysShow(true);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates df = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                    {   System.out.println("SUCCESS");
+                        System.out.println("Настройки локайшен соответсвуют требованиям приложения ");
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+
+                        break;}
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED: {
+                        System.out.println("НЕ ПАШЕТ!");
+                        myCallback.badpremissioninsettings_gps(status);
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+
+                    }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                    {    System.out.println("SETTINGS_CHANGE_UNAVAILABLE");
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+
+                        break;}
+                }
+
+            }
+        });
+
+    }*/
+
 }

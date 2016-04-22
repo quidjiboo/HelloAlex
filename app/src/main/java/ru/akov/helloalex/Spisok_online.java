@@ -1,11 +1,13 @@
 package ru.akov.helloalex;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -34,7 +36,7 @@ import java.util.Map;
  * Created by User on 18.03.2016.
  */
 public class Spisok_online extends myFirebaseLoginBaseActivity implements  MyCallback {
-
+    protected static final int REQUEST_CHECK_SETTINGS = 0x5;
      My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
@@ -134,7 +136,7 @@ public class Spisok_online extends myFirebaseLoginBaseActivity implements  MyCal
 
  app.mGoogleApiClient.connect();
 
-        createLocationRequest();
+        //createLocationRequest();
 
 
     }
@@ -191,60 +193,7 @@ public void lastcoord(){
     }
 
 
-    protected void createLocationRequest() {
 
-        System.out.println("createLocationRequest АУАУАУАУ");
-        app.mLocationRequest = new LocationRequest();
-        app.mLocationRequest.setInterval(10000);
-        app.mLocationRequest.setFastestInterval(5000);
-        app.mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest( app.mLocationRequest);
-        builder.setAlwaysShow(true);
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(app.mGoogleApiClient,
-                        builder.build());
-
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates df = result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                    {   System.out.println("SUCCESS");
-                        System.out.println("Настройки локайшен соответсвуют требованиям приложения ");
-                        // All location settings are satisfied. The client can
-                        // initialize location requests here.
-
-                        break;}
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-                        try {System.out.println("RESOLUTION_REQUIRED");
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(Spisok_online.this, 0x1);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                    {    System.out.println("SETTINGS_CHANGE_UNAVAILABLE");
-                        // Location settings are not satisfied. However, we have no way
-                        // to fix the settings so we won't show the dialog.
-
-                        break;}
-                }
-
-            }
-        });
-
-    }
 
     public void OnclickMy_setGPS(View view) {
        // app.startLocationUpdates();
@@ -255,7 +204,7 @@ public void lastcoord(){
 
     @Override
     public void callBackReturn() {
-        System.out.print("КАЛЛ БЭК");
+        System.out.println("КАЛЛ БЭК");
         String mLatitudeText = "test";
         String mLongitudeText = "test";
         if(app.mCurrentLocation!=null){
@@ -282,5 +231,40 @@ public void lastcoord(){
         ActivityCompat.requestPermissions(
                 Spisok_online.this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},1);
+    }
+
+    @Override
+    public void badpremissioninsettings_gps(Status status) {
+        try {
+            System.out.println("RESOLUTION_REQUIRED");
+            // Show the dialog by calling startResolutionForResult(),
+            // and check the result in onActivityResult().
+            status.startResolutionForResult(Spisok_online.this, REQUEST_CHECK_SETTINGS);
+        } catch (IntentSender.SendIntentException e) {
+            // Ignore the error.
+        }
+
+       }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println(requestCode);
+        switch (requestCode) {
+            // Check for the integer request code originally supplied to startResolutionForResult().
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:{
+                     System.out.println("РАЗРЕШИЛИ");}
+                        break;
+                    case Activity.RESULT_CANCELED:{
+                        System.out.println("ЗАКРЫЛ !!!НЕ РАЗРЕШИЛИ");
+                        finish();
+                    }
+                        break;
+                }
+                break;
+        }
     }
 }
