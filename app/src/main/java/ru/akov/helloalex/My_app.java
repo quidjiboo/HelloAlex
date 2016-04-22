@@ -51,10 +51,7 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
     String mLongitudeText = "test";
     private Firebase firebaseRef;
 
-    interface MyCallback{
-        void callBackReturn();
-        void lastlocation();
-    }
+
 
     MyCallback myCallback;
 
@@ -92,6 +89,7 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
                     Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
+            myCallback.badpremission();
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -157,7 +155,7 @@ System.out.println("Сделал firebaseRef");
                     Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-
+            myCallback.badpremission();
 
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding

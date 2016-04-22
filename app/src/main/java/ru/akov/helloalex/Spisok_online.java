@@ -1,9 +1,11 @@
 package ru.akov.helloalex;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -31,9 +33,9 @@ import java.util.Map;
 /**
  * Created by User on 18.03.2016.
  */
-public class Spisok_online extends myFirebaseLoginBaseActivity implements  My_app.MyCallback {
+public class Spisok_online extends myFirebaseLoginBaseActivity implements  MyCallback {
 
-    My_app app;
+     My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
 
@@ -214,6 +216,7 @@ public void lastcoord(){
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                     {   System.out.println("SUCCESS");
+                        System.out.println("Настройки локайшен соответсвуют требованиям приложения ");
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
 
@@ -272,5 +275,12 @@ public void lastcoord(){
     @Override
     public void lastlocation() {
         lastcoord();
+    }
+
+    @Override
+    public void badpremission() {
+        ActivityCompat.requestPermissions(
+                Spisok_online.this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},1);
     }
 }

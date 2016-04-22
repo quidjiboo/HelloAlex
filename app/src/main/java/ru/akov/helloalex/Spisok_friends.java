@@ -13,7 +13,7 @@ import com.firebase.ui.auth.core.FirebaseLoginError;
  * Created by User on 18.03.2016.
  */
 public class Spisok_friends extends myFirebaseLoginBaseActivity {
- My_app app;
+    private My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
     @Override

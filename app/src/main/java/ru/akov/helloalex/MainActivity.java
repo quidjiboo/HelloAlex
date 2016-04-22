@@ -53,11 +53,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class MainActivity extends myFirebaseLoginBaseActivity  {
+public class MainActivity extends myFirebaseLoginBaseActivity   {
 
 
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
-    static My_app app;
+    private My_app app;
     //Костылёк потом переделать !!!
     //  static Firebase firebaseRef;
     static String ipString = "0.0.0.0";
@@ -78,28 +78,6 @@ public class MainActivity extends myFirebaseLoginBaseActivity  {
 
 
         super.onCreate(savedInstanceState);
-
-
-       /* if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-        if(!mGoogleApiClient.isConnected())*/
-
-
-
-
-  /*      WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInf = wifiMan.getConnectionInfo();
-        int ipAddress = wifiInf.getIpAddress();
-        String ipString = String.format("%d.%d.%d.%d",
-                (ipAddress & 0xff),
-                (ipAddress >> 8 & 0xff),
-                (ipAddress >> 16 & 0xff),
-                (ipAddress >> 24 & 0xff));*/
 
         setContentView(R.layout.activity_main);
         app = ((My_app) getApplicationContext());
@@ -207,30 +185,8 @@ public class MainActivity extends myFirebaseLoginBaseActivity  {
         //   if(getFirebaseRef().getAuth()==null)
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
        // app.mGoogleApiClient.connect();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-
-            ActivityCompat.requestPermissions(
-                    MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},1);
-
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "Недостаточно прав у приложения",
-                    Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-
-
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            System.out.println("ВЫШЕЛ!!!!!!!!!!!");
-            return;
-        }
-    }
+          }
 
 
     public void OnclickMy_test(View view) {
@@ -337,10 +293,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity  {
             getFirebaseRef().child("users/").child(getAuth().getUid()).updateChildren(boolmay);
         }
     }
-
-
-
-
-
-
 }
+
+
+
