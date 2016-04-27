@@ -53,7 +53,6 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
     private Firebase firebaseRef;
 
 
-
     MyCallback myCallback;
 
     void registerCallBack(MyCallback callback){
@@ -97,6 +96,7 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            System.out.println("ВЫШЕЛ!!!!!!!!!!!");
             return;
         }
 
@@ -169,6 +169,7 @@ System.out.println("Сделал firebaseRef");
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             System.out.println("ВЫШЕЛ!!!!!!!!!!!");
+
             return;
         }
         System.out.println("ВСё Ок!!!!!!!!!!!");
@@ -226,7 +227,7 @@ System.out.println("Сделал firebaseRef");
         // application will never receive updates faster than this value.
         mLocationRequest.setFastestInterval(5000);
 
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
     /**
@@ -252,7 +253,7 @@ System.out.println("Сделал firebaseRef");
     @Override
     public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
     //    final Status status = result.getStatus();
-        final Status status = locationSettingsResult.getStatus();
+        final Status  status = locationSettingsResult.getStatus();
      //   final LocationSettingsStates df = result.getLocationSettingsStates();
         switch (status.getStatusCode()) {
             case LocationSettingsStatusCodes.SUCCESS:
@@ -264,6 +265,7 @@ System.out.println("Сделал firebaseRef");
                 break;}
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED: {
                 System.out.println("НЕ ПАШЕТ!");
+
                 myCallback.badpremissioninsettings_gps(status);
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.

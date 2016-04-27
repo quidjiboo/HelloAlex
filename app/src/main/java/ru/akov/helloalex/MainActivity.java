@@ -258,6 +258,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity   {
     }
 
     public void next_scr(View view) {
+        this.finish();
         Intent intent = new Intent(MainActivity.this, Spisok_online.class);
 
         startActivity(intent);

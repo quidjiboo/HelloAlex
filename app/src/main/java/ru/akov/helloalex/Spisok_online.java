@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
+
+
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,8 +38,9 @@ import java.util.Map;
 /**
  * Created by User on 18.03.2016.
  */
-public class Spisok_online extends myFirebaseLoginBaseActivity implements  MyCallback {
-    protected static final int REQUEST_CHECK_SETTINGS = 0x5;
+public class Spisok_online extends AppCompatActivity implements  MyCallback,  Labal_change_my {
+
+    protected static final int REQUEST_CHECK_SETTINGS = 5;
      My_app app;
     FirebaseListAdapter<Users_online> Listonline;
 
@@ -106,15 +110,7 @@ public class Spisok_online extends myFirebaseLoginBaseActivity implements  MyCal
       //  return  MainActivity.firebaseRef;
     }
 
-    @Override
-    protected void onFirebaseLoginProviderError(FirebaseLoginError firebaseLoginError) {
 
-    }
-
-    @Override
-    protected void onFirebaseLoginUserError(FirebaseLoginError firebaseLoginError) {
-
-    }
 
 
     @Override
@@ -140,12 +136,15 @@ public class Spisok_online extends myFirebaseLoginBaseActivity implements  MyCal
 
 
     }
+
+
     @Override
     protected void onStop() {
         super.onStop();
         //    mListAdapter.cleanup();
+        if(app.mGoogleApiClient.isConnected()){
         app.stopLocationUpdates();
-        app.mGoogleApiClient.disconnect();
+        app.mGoogleApiClient.disconnect();}
     }
     @Override
     protected void onPause() {
@@ -159,9 +158,11 @@ public class Spisok_online extends myFirebaseLoginBaseActivity implements  MyCal
     }
 
     public void OnclickMy_back(View view) {
+        this.finish();
         Intent intent = new Intent(Spisok_online.this, MainActivity.class);
 
         startActivity(intent);
+
     }
 
     public void next_scr_spisok_friends(View view) {
@@ -228,13 +229,15 @@ public void lastcoord(){
 
     @Override
     public void badpremission() {
+
         ActivityCompat.requestPermissions(
                 Spisok_online.this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},1);
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},14);
     }
 
     @Override
     public void badpremissioninsettings_gps(Status status) {
+
         try {
             System.out.println("RESOLUTION_REQUIRED");
             // Show the dialog by calling startResolutionForResult(),
@@ -246,21 +249,23 @@ public void lastcoord(){
 
        }
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        super.onActivityResult(requestCode, resultCode, data);
+      //  super.onActivityResult(requestCode, resultCode, data);
         System.out.println(requestCode);
+        System.out.println(resultCode);
         switch (requestCode) {
             // Check for the integer request code originally supplied to startResolutionForResult().
             case REQUEST_CHECK_SETTINGS:
+                System.out.println("Я ТУТ ГОТОВ !!!");
                 switch (resultCode) {
                     case Activity.RESULT_OK:{
                      System.out.println("РАЗРЕШИЛИ");}
                         break;
                     case Activity.RESULT_CANCELED:{
                         System.out.println("ЗАКРЫЛ !!!НЕ РАЗРЕШИЛИ");
-                        finish();
+                     //   finish();
                     }
                         break;
                 }
