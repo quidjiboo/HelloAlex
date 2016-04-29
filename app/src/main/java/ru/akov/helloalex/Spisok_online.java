@@ -217,7 +217,11 @@ public void lastcoord(){
             edf1.setText(mLatitudeText);
 
             TextView edf2 = (TextView) findViewById(R.id.textView_my_Longitude);
-            edf2.setText(mLongitudeText);}
+            edf2.setText(mLongitudeText);
+
+            Accont_info_my_sington.getInstance().setGPS(String.valueOf(app.mCurrentLocation.getLatitude()).toString(), String.valueOf(app.mCurrentLocation.getLongitude()).toString());
+        System.out.print("ЗАписал координыты"+Accont_info_my_sington.getInstance().getGPSLatitude());
+        }
 
 
     }

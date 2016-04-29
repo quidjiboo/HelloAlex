@@ -10,13 +10,28 @@ public class Accont_info_my_sington {
     private String mail;
     private static Accont_info_my_sington instance;
     private String auth;
-
+    private String GPSLatitude;
+    private String GPSLongitude;
     private Accont_info_my_sington(){
         name_for_log="";
         pass="";
         mail="";
         name_use_afterlogin="new instane";
+        GPSLatitude="";
+        GPSLongitude="";
     }
+
+    public void setGPS(String gpsx, String gpsy){
+        this.GPSLatitude=gpsx;this.GPSLongitude=gpsy;
+
+    }
+    public String getGPSLatitude(){
+        return GPSLatitude;
+    }
+    public String getGPSLongitude(){
+        return GPSLongitude;
+    }
+
     public static void  initInstance() {
         if(instance==null){
             instance = new Accont_info_my_sington();   /// спорное решение !!!
@@ -48,6 +63,8 @@ public class Accont_info_my_sington {
         mail="";
         name_for_log="";
     }
+
+
 
 
 }

@@ -210,6 +210,10 @@ System.out.println("Сделал firebaseRef");
 
             myCallback.callBackReturn();
 
+            Accont_info_my_sington.getInstance().setGPS(String.valueOf(mCurrentLocation.getLatitude()).toString(), String.valueOf(mCurrentLocation.getLongitude()).toString());
+            getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLatitude").setValue(Accont_info_my_sington.getInstance().getGPSLatitude());
+            getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLongitude").setValue(Accont_info_my_sington.getInstance().getGPSLongitude());
+
              Toast.makeText(this, location.toString(),
                     Toast.LENGTH_SHORT).show();
         }
@@ -227,7 +231,7 @@ System.out.println("Сделал firebaseRef");
         // application will never receive updates faster than this value.
         mLocationRequest.setFastestInterval(5000);
 
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     /**

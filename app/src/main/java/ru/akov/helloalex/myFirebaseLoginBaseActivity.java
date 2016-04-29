@@ -64,6 +64,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
             }
         });
+
     }
 
     @Override
@@ -170,53 +171,14 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
         getFirebaseRef().child("users").child(authData.getUid()).child("provider").setValue(map.get("provider"));
         getFirebaseRef().child("users").child(authData.getUid()).child("displayName").setValue(map.get("displayName"));
            // getFirebaseRef().child("users").child(authData.getUid()).child("My_name").setValue(Accont_info_my_sington.getInstance().getname());
+System.out.println("Записываю в базу кординаты"+Accont_info_my_sington.getInstance().getGPSLatitude());
+
+
             getFirebaseRef().child("users").child(authData.getUid()).child("phonemodel").setValue(android.os.Build.MODEL.toString());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
 
        // getFirebaseRef().child("users").child(authData.getUid()).child("data_last_connect").setValue(dateFormat.format(new Date()));
 
-
-
-    //    izmenit_label();
-
-
-
-/*String listof_accs_online_string = "/onlineusers";
-String myConnectionsRef_string = "/users/"+getAuth().getUid()+"/connections";
-String lastOnlineRef_string = "/users/"+getAuth().getUid()+"/lastOnline";
-String connectedRef_string = "/.info/connected";
-String Userref_string ="/users/"+getAuth().getUid();*/
-
-
-
-            /*if(conectionlist==null)
-                conectionlist = listof_accs_online.child(authData.getUid());
-
-            Userref.addValueEventListener(zamena_list_online = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-
-
-
-                    User_online_id test = dataSnapshot.child("/connections").child(con.getKey()).getValue(User_online_id.class);
-//                    System.out.println(test.getshowall());
-                    if(test.getshowall()){
-                    Users_online cMasg = new Users_online(dataSnapshot.child("My_name").getValue().toString(), uid_my, android.os.Build.MODEL.toString());
-
-
-                    conectionlist.setValue(cMasg);}
-
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-
-            conectionlist.onDisconnect().removeValue();*/
 
 
 
