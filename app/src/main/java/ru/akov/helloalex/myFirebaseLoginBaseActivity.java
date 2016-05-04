@@ -1,12 +1,17 @@
 package ru.akov.helloalex;
 
 import android.app.FragmentManager;
+import android.location.Location;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 
 import java.text.SimpleDateFormat;
@@ -17,14 +22,20 @@ import java.util.Map;
  * Created by Alexandr on 11.03.2016.
  */
 public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my{
-    static    Firebase con;
 
+
+    static    Firebase con;
+    private    Firebase con1;
     static private String uid_my="";
     static private Firebase conectionlist;
+    static private GeoQueryEventListener  Geo123;
+
    static private ValueEventListener originalListener;
     static private ValueEventListener namechange;
    // static private ValueEventListener listconectionlistner;
     static private ValueEventListener zamena_list_online;
+
+
 
 
     public void set_mylistner(){
@@ -69,9 +80,12 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
     @Override
     protected void onFirebaseLoggedIn(final AuthData authData) {
+
+
         set_mylistner();
         Accont_info_my_sington.getInstance().seauth(authData.toString());
         final Firebase showall = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/showall");
+        final Firebase listof_accs_online_GPS = new Firebase(getFirebaseRef()+"/firebase-hq");
         final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
         final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
         final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
@@ -94,6 +108,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                     //  con = myConnectionsRef.push();
                     //    con = listof_accs_online.push();
                     con=listof_accs_online.child(authData.getUid());
+                    con1=listof_accs_online_GPS.child(authData.getUid());
 
                     Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
 
@@ -101,7 +116,9 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                     //        con.setValue(Boolean.TRUE);
                     con.setValue(cMasg);
                     // when this device disconnects, remove it
+
                     con.onDisconnect().removeValue();
+                    con1.onDisconnect().removeValue();
                     // when I disconnect, update the last time I was seen online
 
                     //расеоментировать потом!!!
@@ -128,14 +145,20 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                 if (!showall&&getFirebaseRef().getAuth()!=null) {
                     if (con != null&&getAuth()!=null) {
                         con.removeValue();
-                    }
 
+                    }
+                    if (con1 != null&&getAuth()!=null) {
+                        con1.removeValue();
+
+                    }
                 }
+
                 if (showall&&getFirebaseRef().getAuth()!=null){
                     System.out.print("ТУТУТТУТУ");
                     if(con==null){
                         con=listof_accs_online.child(authData.getUid());  }
-
+                    if(con1==null){
+                        con1=listof_accs_online_GPS.child(authData.getUid());  }
                     Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
 
                     //getFirebaseRef().child("/users/" + getAuth().getUid() + "/devasies/" + con.getKey() + "/").setValue(Boolean.TRUE);
@@ -160,6 +183,8 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
         if(con!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
             con.removeValue();}
+        if(con1!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
+            con1.removeValue();}
         if(!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
 
         System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!!" + authData);
@@ -211,6 +236,10 @@ System.out.println("Записываю в базу кординаты"+Accont_in
 
         if(con!=null){
             con.removeValue();}
+        if(con1!=null){
+            con1.removeValue();
+
+        }
 
         if(conectionlist!=null){
             conectionlist.removeValue();}
@@ -226,6 +255,9 @@ System.out.println("Записываю в базу кординаты"+Accont_in
     //    edf.setText(Accont_info_my_sington.getInstance().getname());
 
     }
+
+
+
     public void newAcc(AuthData authData) {
         if(authData==null){
 

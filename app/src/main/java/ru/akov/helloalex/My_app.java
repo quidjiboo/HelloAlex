@@ -4,6 +4,11 @@ import android.Manifest;
 import android.app.Application;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -40,7 +45,12 @@ import java.util.Date;
  * Created by User on 21.03.2016.
  */
 public class My_app extends Application implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, ResultCallback<LocationSettingsResult> {
+
+
+    private static final String FIREBASE_UR1L1 = "https://resplendent-inferno-864.firebaseio.com/firebase-hq/";
+
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
+
     protected GoogleApiClient mGoogleApiClient;
     protected LocationRequest mLocationRequest;
     protected Location mLastLocation;
@@ -52,7 +62,10 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
     String mLongitudeText = "test";
     private Firebase firebaseRef;
 
-
+    private GeoQuery geoQuery;
+    private  GeoQueryEventListener myGeoQueryEventList;
+    private GeoFire geoFire;
+    private GeoFire geoFire1;
     MyCallback myCallback;
 
     void registerCallBack(MyCallback callback){
@@ -177,8 +190,20 @@ System.out.println("Сделал firebaseRef");
                 mGoogleApiClient);
         if (mLastLocation != null) {
             System.out.println("КООРДИНАТЫ!!!!!!!!!!");
+
             System.out.println(mLastLocation.getLatitude());
             System.out.println(mLastLocation.getLongitude());
+
+            System.out.println("ЗАписал в базу старые координаты!!!!!!!!!!");
+            Accont_info_my_sington.getInstance().setGPS(String.valueOf(mLastLocation.getLatitude()).toString(), String.valueOf(mLastLocation.getLongitude()).toString());
+
+
+//if(getFirebaseRef().getAuth()!=null){
+
+    //        getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLatitude").setValue(Accont_info_my_sington.getInstance().getGPSLatitude());
+    //        getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLongitude").setValue(Accont_info_my_sington.getInstance().getGPSLongitude());
+//}
+
             myCallback.lastlocation();
 
     }
@@ -195,7 +220,59 @@ System.out.println("Сделал firebaseRef");
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+    public void set_GEO(Location mCurrentLocation){
 
+
+
+        if(getFirebaseRef().getAuth()!=null)
+        {           getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLatitude").setValue(Accont_info_my_sington.getInstance().getGPSLatitude());
+            getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLongitude").setValue(Accont_info_my_sington.getInstance().getGPSLongitude());
+            if(geoFire==null) {
+
+
+                geoFire = new GeoFire(getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()));
+                geoFire1 = new GeoFire(getFirebaseRef().child("firebase-hq"));}
+
+           /* geoFire = new GeoFire(new Firebase(FIREBASE_UR1L).child("users").child(getFirebaseRef().getAuth().getUid().toString()));
+            geoFire1 = new GeoFire(new Firebase(FIREBASE_UR1L1));}*/
+
+            geoFire.setLocation("firebase-hq", new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+            geoFire1.setLocation(getFirebaseRef().getAuth().getUid().toString(), new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+
+            if(geoQuery==null) {
+                geoQuery = geoFire1.queryAtLocation(new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 0.6);
+
+                geoQuery.addGeoQueryEventListener(myGeoQueryEventList =  new GeoQueryEventListener() {
+                    @Override
+                    public void onKeyEntered(String key, GeoLocation location) {
+                        System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                        System.out.println("СООТВЕТВУЕТ ЗАПРОСУ" + key );
+                    }
+
+                    @Override
+                    public void onKeyExited(String key) {
+                        System.out.println(String.format("Key %s is no longer in the search area", key));
+                    }
+
+                    @Override
+                    public void onKeyMoved(String key, GeoLocation location) {
+                        System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                    }
+
+                    @Override
+                    public void onGeoQueryReady() {
+                        System.out.println("All initial data has been loaded and events have been fired!");
+                    }
+
+                    @Override
+                    public void onGeoQueryError(FirebaseError error) {
+                        System.err.println("There was an error with this query: " + error);
+                    }
+                });
+
+            }
+        }
+    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -208,11 +285,19 @@ System.out.println("Сделал firebaseRef");
             mLatitudeText = (String.valueOf(mCurrentLocation.getLatitude()).toString());
             mLongitudeText = (String.valueOf(mCurrentLocation.getLongitude()).toString());
 
-            myCallback.callBackReturn();
 
+            myCallback.callBackReturn();
             Accont_info_my_sington.getInstance().setGPS(String.valueOf(mCurrentLocation.getLatitude()).toString(), String.valueOf(mCurrentLocation.getLongitude()).toString());
-            getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLatitude").setValue(Accont_info_my_sington.getInstance().getGPSLatitude());
-            getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLongitude").setValue(Accont_info_my_sington.getInstance().getGPSLongitude());
+
+            System.out.println("ЗАписал в базу новые координаты они обновились!!!!!!");
+
+
+
+
+
+            set_GEO(mCurrentLocation);
+
+
 
              Toast.makeText(this, location.toString(),
                     Toast.LENGTH_SHORT).show();
@@ -285,56 +370,6 @@ System.out.println("Сделал firebaseRef");
         }
     }
 
-    /*protected void createLocationRequest() {
 
-        System.out.println("createLocationRequest АУАУАУАУ");
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest( mLocationRequest);
-
-        builder.setAlwaysShow(true);
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
-                        builder.build());
-
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates df = result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                    {   System.out.println("SUCCESS");
-                        System.out.println("Настройки локайшен соответсвуют требованиям приложения ");
-                        // All location settings are satisfied. The client can
-                        // initialize location requests here.
-
-                        break;}
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED: {
-                        System.out.println("НЕ ПАШЕТ!");
-                        myCallback.badpremissioninsettings_gps(status);
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-
-                    }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                    {    System.out.println("SETTINGS_CHANGE_UNAVAILABLE");
-                        // Location settings are not satisfied. However, we have no way
-                        // to fix the settings so we won't show the dialog.
-
-                        break;}
-                }
-
-            }
-        });
-
-    }*/
 
 }

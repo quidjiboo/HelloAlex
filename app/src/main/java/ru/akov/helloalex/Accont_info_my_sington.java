@@ -12,6 +12,7 @@ public class Accont_info_my_sington {
     private String auth;
     private String GPSLatitude;
     private String GPSLongitude;
+
     private Accont_info_my_sington(){
         name_for_log="";
         pass="";

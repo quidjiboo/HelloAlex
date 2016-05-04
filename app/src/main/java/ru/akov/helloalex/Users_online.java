@@ -7,6 +7,8 @@ public class Users_online {
 
     private String my_name;
     private String uid;
+
+
 /*    private String data_last_connect;
     private Map<String,Boolean> connections;
     private long lastOnline;*/
