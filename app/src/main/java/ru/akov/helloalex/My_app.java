@@ -220,6 +220,11 @@ System.out.println("Сделал firebaseRef");
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+    public void update_set_GEO(Location mCurrentLocation){
+
+        geoQuery.setCenter(new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+    }
     public void set_GEO(Location mCurrentLocation){
 
 
@@ -240,18 +245,24 @@ System.out.println("Сделал firebaseRef");
             geoFire1.setLocation(getFirebaseRef().getAuth().getUid().toString(), new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
 
             if(geoQuery==null) {
-                geoQuery = geoFire1.queryAtLocation(new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 0.6);
+                geoQuery = geoFire1.queryAtLocation(new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 1);
 
                 geoQuery.addGeoQueryEventListener(myGeoQueryEventList =  new GeoQueryEventListener() {
                     @Override
                     public void onKeyEntered(String key, GeoLocation location) {
+
                         System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
                         System.out.println("СООТВЕТВУЕТ ЗАПРОСУ" + key );
+                        //НЕ РАБОАТЕТ КОГДА РАЗЛОГИНИВАЕШСЬЯ !! НУЮЖНО ЛИСТНЕР УБИРАТЬ!!!
+                        getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(key).setValue("true");
+
                     }
 
                     @Override
                     public void onKeyExited(String key) {
                         System.out.println(String.format("Key %s is no longer in the search area", key));
+                        System.out.println("УШЁЛ ИЗ ЗОНЫ!" + key );
+                       getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(key).removeValue();
                     }
 
                     @Override
@@ -294,9 +305,8 @@ System.out.println("Сделал firebaseRef");
 
 
 
-
             set_GEO(mCurrentLocation);
-
+            update_set_GEO(mCurrentLocation);
 
 
              Toast.makeText(this, location.toString(),
