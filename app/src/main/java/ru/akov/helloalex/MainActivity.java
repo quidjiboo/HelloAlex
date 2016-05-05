@@ -229,7 +229,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity   {
         logout();
 
         getFirebaseRef().unauth();
-        //   Firebase.goOffline();
+          // Firebase.goOffline();
 
 
         //   app.remove();

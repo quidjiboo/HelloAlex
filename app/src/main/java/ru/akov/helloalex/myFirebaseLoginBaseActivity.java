@@ -117,6 +117,9 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                     con.setValue(cMasg);
                     // when this device disconnects, remove it
 
+                 //   listof_accs_online.removeValue(); //Для проверки прав!!!
+
+
                     con.onDisconnect().removeValue();
                     con1.onDisconnect().removeValue();
                     // when I disconnect, update the last time I was seen online

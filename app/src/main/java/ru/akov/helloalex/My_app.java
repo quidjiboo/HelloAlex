@@ -254,6 +254,7 @@ System.out.println("Сделал firebaseRef");
                         System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
                         System.out.println("СООТВЕТВУЕТ ЗАПРОСУ" + key );
                         //НЕ РАБОАТЕТ КОГДА РАЗЛОГИНИВАЕШСЬЯ !! НУЮЖНО ЛИСТНЕР УБИРАТЬ!!!
+                        if(getFirebaseRef().getAuth()!=null)
                         getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(key).setValue("true");
 
                     }
@@ -262,6 +263,7 @@ System.out.println("Сделал firebaseRef");
                     public void onKeyExited(String key) {
                         System.out.println(String.format("Key %s is no longer in the search area", key));
                         System.out.println("УШЁЛ ИЗ ЗОНЫ!" + key );
+                        if(getFirebaseRef().getAuth()!=null)
                        getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(key).removeValue();
                     }
 
