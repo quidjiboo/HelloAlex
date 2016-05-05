@@ -227,7 +227,7 @@ System.out.println("Сделал firebaseRef");
     }
     public void set_GEO(Location mCurrentLocation){
 
-
+//НЕЗАБЫТЬ УБРАТЬ ЛИСТНЕР ПРИ РАЗЛОИГНИВАНИИ!!!
 
         if(getFirebaseRef().getAuth()!=null)
         {           getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLatitude").setValue(Accont_info_my_sington.getInstance().getGPSLatitude());
