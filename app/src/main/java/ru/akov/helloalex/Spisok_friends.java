@@ -38,7 +38,9 @@ public class Spisok_friends extends myFirebaseLoginBaseActivity {
 
         TextView edf = (TextView) findViewById(R.id.textView_my_online);
         edf.setText(Accont_info_my_sington.getInstance().getname());
+
     }
+
 
    // public void back(View view) {
   //  Intent intent = new Intent(Spisok_online.this, MainActivity.class);

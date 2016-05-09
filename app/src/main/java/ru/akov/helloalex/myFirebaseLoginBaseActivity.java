@@ -1,23 +1,17 @@
 package ru.akov.helloalex;
 
 import android.app.FragmentManager;
-import android.location.Location;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-
 /**
  * Created by Alexandr on 11.03.2016.
  */
@@ -28,7 +22,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
     private    Firebase con1;
     static private String uid_my="";
     static private Firebase conectionlist;
-    static private GeoQueryEventListener  Geo123;
+//    static private GeoQueryEventListener  Geo123;
 
    static private ValueEventListener originalListener;
     static private ValueEventListener namechange;
@@ -85,7 +79,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
         set_mylistner();
         Accont_info_my_sington.getInstance().seauth(authData.toString());
         final Firebase showall = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/showall");
-        final Firebase listof_accs_online_GPS = new Firebase(getFirebaseRef()+"/firebase-hq");
+        final Firebase listof_accs_online_GPS = new Firebase(getFirebaseRef()+"/firebasehq");
         final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
         final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
         final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
@@ -217,12 +211,9 @@ System.out.println("Записываю в базу кординаты"+Accont_in
 
 
     }
-
-
-
+//переопределил , что бы при раз-логинивании отваливать записи в списках онлайн
     @Override
-    protected void onFirebaseLoggedOut() {
-        super.onFirebaseLoggedOut();
+    public void logout() {
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
         final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+uid_my+"/connections");
         final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+uid_my);
@@ -246,6 +237,14 @@ System.out.println("Записываю в базу кординаты"+Accont_in
 
         if(conectionlist!=null){
             conectionlist.removeValue();}
+
+        super.logout();
+    }
+
+    @Override
+    protected void onFirebaseLoggedOut() {
+        super.onFirebaseLoggedOut();
+
 
 
 

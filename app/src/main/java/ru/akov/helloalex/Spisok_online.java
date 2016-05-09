@@ -4,13 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.location.Location;
 import android.os.Bundle;
-
-
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -19,18 +15,7 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
-import com.firebase.ui.auth.core.AuthProviderType;
-import com.firebase.ui.auth.core.FirebaseLoginError;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +27,7 @@ public class Spisok_online extends AppCompatActivity implements  MyCallback,  La
 
     protected static final int REQUEST_CHECK_SETTINGS = 5;
      My_app app;
-    FirebaseListAdapter<Users_online> Listonline;
+    FirebaseListAdapter<Nearest_dudes> Listonline;
 
 
     @Override
@@ -52,19 +37,22 @@ public class Spisok_online extends AppCompatActivity implements  MyCallback,  La
         setContentView(R.layout.spisok_online);
        app = ((My_app) getApplicationContext());
         app.registerCallBack(this);
+System.out.println(getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").toString());
+
 
         final ListView lvMain1 = (ListView) this.findViewById(R.id.listView_online);
-        Listonline = new FirebaseListAdapter<Users_online>(this, Users_online.class,
-          //      android.R.layout.simple_list_item_1, getFirebaseRef().child("Test123")) {
-               android.R.layout.test_list_item, getFirebaseRef().child("onlineusers"))
+        Listonline = new FirebaseListAdapter<Nearest_dudes>(this, Nearest_dudes.class,
+                //      android.R.layout.simple_list_item_1, getFirebaseRef().child("Test123")) {
+                android.R.layout.simple_list_item_2, getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes"))
 
 
         {
             @Override
-            protected void populateView(View v, Users_online model, int position) {
+            protected void populateView(View v, Nearest_dudes model, int position) {
 
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUid());
-         //       ((TextView)v.findViewById(android.R.id.text2)).setText(model.getPhonemodel1());
+                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getname());
+                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getuid());
+                //       ((TextView)v.findViewById(android.R.id.text2)).setText(model.getPhonemodel1());
             }
         };
 
@@ -78,9 +66,9 @@ public class Spisok_online extends AppCompatActivity implements  MyCallback,  La
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                     long id) {
-
-                TextView textView = (TextView) itemClicked;
-                String strText = textView.getText().toString();
+                TextView textView1 = (TextView) itemClicked.findViewById(android.R.id.text1);
+                TextView textView2 = (TextView) itemClicked.findViewById(android.R.id.text2);
+                String strText = textView2.getText().toString();
 
                 System.out.println("Я ВЫБРАЛ ДРУГА!!!!!!!!!!" + strText);
                 Map<String, String> map = new HashMap<String, String>();
@@ -89,13 +77,11 @@ public class Spisok_online extends AppCompatActivity implements  MyCallback,  La
                 getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid()).child("friends").push().setValue(map.get("name_of_friend"));
 
 
-                Toast.makeText(getApplicationContext(), ((TextView) itemClicked).getText(),
+                Toast.makeText(getApplicationContext(), textView1.getText(),
                         Toast.LENGTH_SHORT).show();
 
             }
         });
-
-
 
 
     }
@@ -197,6 +183,9 @@ public void lastcoord(){
 
 
     public void OnclickMy_setGPS(View view) {
+
+
+
        // app.startLocationUpdates();
 
        // createLocationRequest();

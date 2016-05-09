@@ -2,43 +2,36 @@ package ru.akov.helloalex;
 
 import android.Manifest;
 import android.app.Application;
-
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-
-import android.content.Context;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.util.Date;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 
 /**
@@ -47,7 +40,7 @@ import java.util.Date;
 public class My_app extends Application implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, ResultCallback<LocationSettingsResult> {
 
 
-    private static final String FIREBASE_UR1L1 = "https://resplendent-inferno-864.firebaseio.com/firebase-hq/";
+    private static final String FIREBASE_UR1L1 = "https://resplendent-inferno-864.firebaseio.com/firebasehq/";
 
     private static final String FIREBASE_UR1L = "https://resplendent-inferno-864.firebaseio.com/";
 
@@ -64,7 +57,7 @@ public class My_app extends Application implements ConnectionCallbacks, OnConnec
 
     private GeoQuery geoQuery;
     private  GeoQueryEventListener myGeoQueryEventList;
-    private GeoFire geoFire;
+   // private GeoFire geoFire;
     private GeoFire geoFire1;
     MyCallback myCallback;
 
@@ -232,16 +225,16 @@ System.out.println("Сделал firebaseRef");
         if(getFirebaseRef().getAuth()!=null)
         {           getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLatitude").setValue(Accont_info_my_sington.getInstance().getGPSLatitude());
             getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("GPSLongitude").setValue(Accont_info_my_sington.getInstance().getGPSLongitude());
-            if(geoFire==null) {
+            if(geoFire1==null) {
 
 
-                geoFire = new GeoFire(getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()));
-                geoFire1 = new GeoFire(getFirebaseRef().child("firebase-hq"));}
+           //     geoFire = new GeoFire(getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()));
+                geoFire1 = new GeoFire(getFirebaseRef().child("firebasehq"));}
 
            /* geoFire = new GeoFire(new Firebase(FIREBASE_UR1L).child("users").child(getFirebaseRef().getAuth().getUid().toString()));
             geoFire1 = new GeoFire(new Firebase(FIREBASE_UR1L1));}*/
 
-            geoFire.setLocation("firebase-hq", new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+      //      geoFire.setLocation("firebasehq", new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
             geoFire1.setLocation(getFirebaseRef().getAuth().getUid().toString(), new GeoLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
 
             if(geoQuery==null) {
@@ -251,12 +244,30 @@ System.out.println("Сделал firebaseRef");
                     @Override
                     public void onKeyEntered(String key, GeoLocation location) {
 
+
                         System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
                         System.out.println("СООТВЕТВУЕТ ЗАПРОСУ" + key );
                         //НЕ РАБОАТЕТ КОГДА РАЗЛОГИНИВАЕШСЬЯ !! НУЮЖНО ЛИСТНЕР УБИРАТЬ!!!
-                        if(getFirebaseRef().getAuth()!=null)
-                        getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(key).setValue("true");
+                        if(getFirebaseRef().getAuth()!=null){
+                              //  getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(key).setValue("true");
+                            getFirebaseRef().child("onlineusers/" + key).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+                 //                   System.out.println("Mary is a member of this group:!!!!!!!!!!!!!!! " + snapshot.getValue());
 
+
+                                    getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(snapshot.child("uid").getValue().toString()).child("name").setValue(snapshot.child("my_name").getValue().toString());
+                                    getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(snapshot.child("uid").getValue().toString()).child("uid").setValue(snapshot.child("uid").getValue().toString());
+                                }
+
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                    // ignore
+                                }
+                            });
+
+                        }
                     }
 
                     @Override
