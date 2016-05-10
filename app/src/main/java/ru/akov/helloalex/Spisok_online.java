@@ -13,8 +13,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.ui.FirebaseListAdapter;
+import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
+import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.google.android.gms.common.api.Status;
 
 import java.util.HashMap;
@@ -23,12 +29,15 @@ import java.util.Map;
 /**
  * Created by User on 18.03.2016.
  */
-public class Spisok_online extends AppCompatActivity implements  MyCallback,  Labal_change_my {
-
+public class Spisok_online  extends FirebaseLoginBaseActivity implements  MyCallback,  Labal_change_my {
+    private ChildEventListener namechange1;
     protected static final int REQUEST_CHECK_SETTINGS = 5;
      My_app app;
     FirebaseListAdapter<Nearest_dudes> Listonline;
-
+    protected void onFirebaseLoggedIn(AuthData authData) {
+        System.out.println("В НОВОМ ОКНЕ ПОДКОНЕКТИЛСЯ И ПОДКЛЮЧАЮ ЛИСТНЕР!!!");
+        request_watch();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +79,12 @@ System.out.println(getFirebaseRef().child("users").child(getFirebaseRef().getAut
                 TextView textView2 = (TextView) itemClicked.findViewById(android.R.id.text2);
                 String strText = textView2.getText().toString();
 
-                System.out.println("Я ВЫБРАЛ ДРУГА!!!!!!!!!!" + strText);
+                System.out.println("Я ВЫБРАЛ ДРУГ213123123А!!!!!!!!!!" + strText);
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("name_of_friend", strText);
 
-                getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid()).child("friends").push().setValue(map.get("name_of_friend"));
-
+                getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid()).child("i_do_photo").child(map.get("name_of_friend")).setValue("what");
+                getFirebaseRef().child("users").child(map.get("name_of_friend")).child("request_photo").child(getFirebaseRef().getAuth().getUid().toString()).setValue("what");
 
                 Toast.makeText(getApplicationContext(), textView1.getText(),
                         Toast.LENGTH_SHORT).show();
@@ -96,7 +105,15 @@ System.out.println(getFirebaseRef().child("users").child(getFirebaseRef().getAut
       //  return  MainActivity.firebaseRef;
     }
 
+    @Override
+    protected void onFirebaseLoginProviderError(FirebaseLoginError firebaseLoginError) {
 
+    }
+
+    @Override
+    protected void onFirebaseLoginUserError(FirebaseLoginError firebaseLoginError) {
+
+    }
 
 
     @Override
@@ -242,8 +259,41 @@ public void lastcoord(){
         }
 
        }
+    public void request_watch() {
+        getFirebaseRef().child("users").child(this.getAuth().getUid()).child("request_photo").addChildEventListener(namechange1 = new ChildEventListener() {
+
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                System.out.println(dataSnapshot.getValue().toString() + "= ТАКОЙ ПОЛЬЗОВАТЕЛЬ ХОЧЕТ СДЕЛАТЬ ФОТО!");
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                System.out.println(dataSnapshot.getValue().toString() + "= ОТКОЛАЗСЯ ОТ ФОТО С ВАМИ!");
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+
+            }
+        });
+
+    }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
       //  super.onActivityResult(requestCode, resultCode, data);

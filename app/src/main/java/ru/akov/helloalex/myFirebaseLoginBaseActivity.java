@@ -3,6 +3,7 @@ package ru.akov.helloalex;
 import android.app.FragmentManager;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -20,6 +21,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
     static    Firebase con;
     private    Firebase con1;
+
     static private String uid_my="";
     static private Firebase conectionlist;
 //    static private GeoQueryEventListener  Geo123;
@@ -77,6 +79,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
         set_mylistner();
+
         Accont_info_my_sington.getInstance().seauth(authData.toString());
         final Firebase showall = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/showall");
         final Firebase listof_accs_online_GPS = new Firebase(getFirebaseRef()+"/firebasehq");
@@ -103,6 +106,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                     //    con = listof_accs_online.push();
                     con=listof_accs_online.child(authData.getUid());
                     con1=listof_accs_online_GPS.child(authData.getUid());
+
 
                     Users_online cMasg = new Users_online(Accont_info_my_sington.getInstance().getname(), uid_my, android.os.Build.MODEL.toString());
 
