@@ -19,11 +19,13 @@ import java.util.Map;
 public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActivity implements Labal_change_my{
 
 
-    static    Firebase con;
+    private    Firebase con; //было статик зачемто!
     private    Firebase con1;
-
-    static private String uid_my="";
-    static private Firebase conectionlist;
+   private    Firebase i_do_photo;
+    private    Firebase request_photo;
+    private    Firebase nearest_dudes;
+    private String uid_my=""; //было статик зачемто!
+//    static private Firebase conectionlist;
 //    static private GeoQueryEventListener  Geo123;
 
    static private ValueEventListener originalListener;
@@ -81,17 +83,19 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
         set_mylistner();
 
         Accont_info_my_sington.getInstance().seauth(authData.toString());
-        final Firebase showall = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/showall");
+    //    final Firebase showall = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/showall");
         final Firebase listof_accs_online_GPS = new Firebase(getFirebaseRef()+"/firebasehq");
         final Firebase listof_accs_online = new Firebase(getFirebaseRef()+"/onlineusers");
-        final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
-        final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
+   //     final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/connections");
+   //     final Firebase lastOnlineRef = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/lastOnline");
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
         final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid());
-
-
-
-
+        i_do_photo =  new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/i_do_photo");
+        request_photo =  new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/request_photo");
+        nearest_dudes  =  new Firebase(getFirebaseRef()+"/users/"+getAuth().getUid()+"/nearest_dudes");
+        request_photo.onDisconnect().removeValue();
+        i_do_photo.onDisconnect().removeValue();
+        nearest_dudes.onDisconnect().removeValue();
 
         connectedRef.addValueEventListener(originalListener = new ValueEventListener() {
             @Override
@@ -146,7 +150,9 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
                 if (!showall&&getFirebaseRef().getAuth()!=null) {
                     if (con != null&&getAuth()!=null) {
                         con.removeValue();
-
+                        i_do_photo.removeValue();
+                        request_photo.removeValue();
+                        nearest_dudes.removeValue();
                     }
                     if (con1 != null&&getAuth()!=null) {
                         con1.removeValue();
@@ -183,9 +189,16 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 
 
         if(con!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
-            con.removeValue();}
+            con.removeValue();
+            i_do_photo.removeValue();
+            request_photo.removeValue();
+            nearest_dudes.removeValue();
+        }
         if(con1!=null&&!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
-            con1.removeValue();}
+            con1.removeValue();
+            i_do_photo.removeValue();
+            request_photo.removeValue();
+            nearest_dudes.removeValue();}
         if(!authData.toString().equals(Accont_info_my_sington.getInstance().getauth())){
 
         System.out.println("Я ПОДКЛЮЧЕН!!!!!!!!!!" + authData);
@@ -219,7 +232,7 @@ System.out.println("Записываю в базу кординаты"+Accont_in
     @Override
     public void logout() {
         final Firebase connectedRef = new Firebase(getFirebaseRef()+"/.info/connected");
-        final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+uid_my+"/connections");
+      //  final Firebase myConnectionsRef = new Firebase(getFirebaseRef()+"/users/"+uid_my+"/connections");
         final Firebase Userref = new Firebase(getFirebaseRef()+"/users/"+uid_my);
 
         if(zamena_list_online!=null){
@@ -233,14 +246,20 @@ System.out.println("Записываю в базу кординаты"+Accont_in
 
 
         if(con!=null){
-            con.removeValue();}
+            con.removeValue();
+            i_do_photo.removeValue();
+            request_photo.removeValue();
+            nearest_dudes.removeValue();
+        }
         if(con1!=null){
             con1.removeValue();
-
+            i_do_photo.removeValue();
+            request_photo.removeValue();
+            nearest_dudes.removeValue();
         }
 
-        if(conectionlist!=null){
-            conectionlist.removeValue();}
+/*        if(conectionlist!=null){
+            conectionlist.removeValue();}*/
 
         super.logout();
     }

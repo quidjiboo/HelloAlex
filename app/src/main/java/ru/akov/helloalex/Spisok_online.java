@@ -265,7 +265,11 @@ public void lastcoord(){
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                System.out.println(dataSnapshot.getValue().toString() + "= ТАКОЙ ПОЛЬЗОВАТЕЛЬ ХОЧЕТ СДЕЛАТЬ ФОТО!");
+                System.out.println("= ТАКОЙ ПОЛЬЗОВАТЕЛЬ ХОЧЕТ СДЕЛАТЬ ФОТО!" + dataSnapshot.getValue().toString());
+                System.out.println(dataSnapshot.getKey());
+                getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid()).child("request_photo").child(dataSnapshot.getKey()).setValue("true");
+                getFirebaseRef().child("users").child(dataSnapshot.getKey()).child("i_do_photo").child(getFirebaseRef().getAuth().getUid().toString()).setValue("true");
+
             }
 
             @Override
@@ -276,6 +280,7 @@ public void lastcoord(){
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println(dataSnapshot.getValue().toString() + "= ОТКОЛАЗСЯ ОТ ФОТО С ВАМИ!");
+
             }
 
             @Override

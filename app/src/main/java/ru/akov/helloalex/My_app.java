@@ -255,9 +255,9 @@ System.out.println("Сделал firebaseRef");
                                 public void onDataChange(DataSnapshot snapshot) {
                  //                   System.out.println("Mary is a member of this group:!!!!!!!!!!!!!!! " + snapshot.getValue());
 
-
+                                    if(getFirebaseRef().getAuth()!=null){
                                     getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(snapshot.child("uid").getValue().toString()).child("name").setValue(snapshot.child("my_name").getValue().toString());
-                                    getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(snapshot.child("uid").getValue().toString()).child("uid").setValue(snapshot.child("uid").getValue().toString());
+                                    getFirebaseRef().child("users").child(getFirebaseRef().getAuth().getUid().toString()).child("nearest_dudes").child(snapshot.child("uid").getValue().toString()).child("uid").setValue(snapshot.child("uid").getValue().toString());}
                                 }
 
 
