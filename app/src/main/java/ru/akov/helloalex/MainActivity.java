@@ -184,6 +184,7 @@ public class MainActivity extends myFirebaseLoginBaseActivity   {
         // All providers are optional! Remove any you don't want.
         //   if(getFirebaseRef().getAuth()==null)
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
+        setEnabledAuthProvider(AuthProviderType.GOOGLE);
        // app.mGoogleApiClient.connect();
 
           }
