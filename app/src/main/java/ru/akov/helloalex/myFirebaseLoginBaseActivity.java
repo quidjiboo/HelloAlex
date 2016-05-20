@@ -41,7 +41,7 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                System.out.println("ЗАШЁЛ ТАКИМИ ПОЛЯМИ" + snapshot.child("My_name").getValue());
+
 
                 //ПОЧИТАТЬ ПРО ИСКЛЮЧЕНИЯ!!!!
 /*if(snapshot.getValue()!=null){
@@ -51,14 +51,19 @@ public abstract class myFirebaseLoginBaseActivity extends FirebaseLoginBaseActiv
 }*/
 
                 if (snapshot.child("My_name").getValue() != null) {
+                    System.out.println("ЗАШЁЛ ТАКИМИ ПОЛЯМИ" + snapshot.child("My_name").getValue());
                     izmenit_singltone(snapshot.child("My_name").getValue().toString());
 
+                    System.out.println("ОТРАБОТАЛ!!!! " + snapshot.child("My_name").getValue().toString());
+
                 } else {
+                    getFirebaseRef().child("users").child(getAuth().getUid()).child("My_name").setValue("none");
+                    getFirebaseRef().child("users").child(getAuth().getUid()).child("showall").setValue("false");
                     izmenit_singltone("none");
                 }
 
                 //   izmenit_singltone(snapshot.getValue().toString());.
-                System.out.println("ОТРАБОТАЛ!!!! " + snapshot.child("My_name").getValue().toString());
+
 
                 izmenit_label();
 
